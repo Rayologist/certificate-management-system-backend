@@ -1,4 +1,4 @@
-import { object, string, array, number } from "Yup";
+import { object, string, array, number } from "yup";
 import validate from "../../validator";
 
 const schema = object({

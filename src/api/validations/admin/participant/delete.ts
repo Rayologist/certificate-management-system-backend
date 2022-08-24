@@ -1,4 +1,4 @@
-import { object, number } from "Yup";
+import { object, number } from "yup";
 import validate from "../../validator";
 
 const schema = object({

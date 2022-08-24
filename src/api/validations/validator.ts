@@ -1,5 +1,5 @@
 import { Next } from "koa";
-import { SchemaOf } from "Yup";
+import { SchemaOf } from "yup";
 import { RouterContext } from "@koa/router";
 import debug from "debug";
 
