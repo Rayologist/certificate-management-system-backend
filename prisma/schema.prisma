@@ -1,0 +1,75 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Activity {
+  auid      String   @id @default(uuid()) @db.Uuid
+  title     String
+  startDate DateTime @map("start_date")
+  endDate   DateTime @map("end_date")
+  url       String
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  certificate Certificate[]
+  participant Participant[]
+
+  @@map("activities")
+}
+
+model Certificate {
+  id          Int      @id @default(autoincrement())
+  activityUid String   @map("activity_uid") @db.Uuid
+  displayName String
+  title       Json
+  totalHour   Int      @map("total_hour")
+  dateString  String   @map("date_string")
+  filename    String
+  url         String
+  available   Boolean  @default(true)
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  activity               Activity                 @relation(fields: [activityUid], references: [auid], onUpdate: NoAction)
+  participantCertificate ParticipantCertificate[]
+
+  @@map("certificates")
+}
+
+model Participant {
+  id          Int      @id @default(autoincrement())
+  activityUid String   @map("activity_uid") @db.Uuid
+  name        String
+  from        String
+  title       String
+  email       String
+  phone       String
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  activity               Activity                 @relation(fields: [activityUid], references: [auid], onUpdate: NoAction)
+  participantCertificate ParticipantCertificate[]
+
+  @@map("participants")
+}
+
+model ParticipantCertificate {
+  id        Int      @id @default(autoincrement())
+  pid       Int
+  cid       Int
+  createdAt DateTime @default(now())
+
+  participant Participant @relation(fields: [pid], references: [id], onUpdate: NoAction)
+  certificate Certificate @relation(fields: [cid], references: [id], onUpdate: NoAction)
+
+  @@unique([pid, cid])
+  @@map("participant_certificate")
+}
