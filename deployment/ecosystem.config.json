@@ -1,0 +1,57 @@
+{
+  "apps": [
+    {
+      "script": "npm",
+      "args": "run start:pm2",
+      "cwd": "/home/rayologist/certificate-management-system-backend/",
+      "name": "cert-backend-worker-0",
+      "env": {
+        "NODE_ENV": "production",
+        "PORT": 6666
+      },
+      "max_memory_restart": "2G"
+    },
+    {
+      "script": "npm",
+      "args": "run start:pm2",
+      "cwd": "/home/rayologist/certificate-management-system-backend/",
+      "name": "cert-backend-worker-1",
+      "env": {
+        "NODE_ENV": "production",
+        "PORT": 6688
+      },
+      "max_memory_restart": "2G"
+    },
+    {
+      "script": "npm",
+      "args": "run start:pm2",
+      "cwd": "/home/rayologist/certificate-management-system-backend/",
+      "name": "cert-backend-worker-2",
+      "env": {
+        "NODE_ENV": "production",
+        "PORT": 8866
+      },
+      "max_memory_restart": "2G"
+    },
+    {
+      "script": "npm",
+      "args": "start -- -p 6776",
+      "cwd": "/home/rayologist/certificate-management-system-frontend/",
+      "name": "cert-frontend-worker-2",
+      "env": {
+        "NODE_ENV": "production"
+      },
+      "max_memory_restart": "2G"
+    },
+    {
+      "script": "npm",
+      "args": "start -- -p 9339",
+      "cwd": "/home/rayologist/certificate-management-system-frontend/",
+      "name": "cert-frontend-worker-2",
+      "env": {
+        "NODE_ENV": "production"
+      },
+      "max_memory_restart": "2G"
+    }
+  ]
+}

@@ -7,6 +7,7 @@
   "scripts": {
     "dev": "nodemon src/index.ts",
     "start": "PORT=3001 NODE_ENV=production node -r dotenv/config dist/src/index.js",
+    "start:pm2": "node -r dotenv/config dist/src/index.js",
     "build": "tsc && tsc-alias"
   },
   "keywords": [],
