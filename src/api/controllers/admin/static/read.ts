@@ -1,5 +1,5 @@
 import { Middleware } from "@koa/router";
-import { CERTIFICATE_ROOT } from "src/api/config";
+import { CERTIFICATE_ROOT } from "@config";
 import send from "koa-send";
 import path from "path";
 import resizeImage from "./resizer";

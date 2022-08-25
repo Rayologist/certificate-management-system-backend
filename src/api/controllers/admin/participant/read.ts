@@ -41,7 +41,6 @@ const handleGetParticipantByActivity: Middleware = async (ctx) => {
 };
 
 const handleGetParticipantStats: Middleware = async (ctx) => {
-
   const data = await prisma.activity.findMany({
     select: {
       auid: true,

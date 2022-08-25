@@ -2,7 +2,7 @@ import { Middleware } from "@koa/router";
 import { prisma } from "@models";
 import { UpdateCertificatePayload as Payload, Text } from "types";
 import { drawCertificate } from "./generator";
-import { CERTIFICATE_ROOT } from "src/api/config";
+import { CERTIFICATE_ROOT } from "@config";
 import path from "path";
 import fs from "fs";
 import { pipeline } from "stream/promises";

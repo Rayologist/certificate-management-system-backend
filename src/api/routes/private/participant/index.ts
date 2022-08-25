@@ -1,4 +1,7 @@
-import { handleGetParticipantByActivity, handleGetParticipantStats } from "@controllers/admin/participant/read";
+import {
+  handleGetParticipantByActivity,
+  handleGetParticipantStats,
+} from "@controllers/admin/participant/read";
 import Router from "@koa/router";
 import handleCreateParticipant from "@controllers/admin/participant/create";
 import validateCreateParticipant from "@validations/admin/participant/create";
@@ -9,10 +12,8 @@ import handleDeleteParticipant from "@controllers/admin/participant/delete";
 
 const router = new Router({ prefix: "/participant" });
 
-// router.get("/", handleGetParticipant);
-
-router.get("/:auid", handleGetParticipantByActivity);
 router.get("/", handleGetParticipantStats);
+router.get("/:auid", handleGetParticipantByActivity);
 router.post("/", validateCreateParticipant, handleCreateParticipant);
 router.put("/", validateUpdateParticipant, handleUpdateParticipant);
 router.delete("/", validateDeleteParticipant, handleDeleteParticipant);

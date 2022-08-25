@@ -1,20 +1,23 @@
 import { Next } from "koa";
-import { SchemaOf } from "yup";
+import { SchemaOf, ValidationError } from "yup";
 import { RouterContext } from "@koa/router";
-import debug from "debug";
 
-const log = debug("validate");
-
-function validate<T>(schema: SchemaOf<T>) {
+function validate<T>(
+  schema: SchemaOf<T>,
+  returnMessage?: (errors: ValidationError) => object
+) {
   return async (ctx: RouterContext, next: Next) => {
     try {
       await schema.validate(ctx.request.body);
-
       return next();
-    } catch (error) {
-      log(error);
-      console.log(error);
+    } catch (err) {
+      const errors = err as ValidationError;
+      console.log(errors);
       ctx.status = 422;
+      if (typeof returnMessage === "function") {
+        ctx.body = { status: "failed", data: returnMessage(errors) };
+        return;
+      }
       ctx.body = { status: "failed", msg: "invalid request body" };
     }
   };

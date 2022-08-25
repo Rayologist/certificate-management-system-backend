@@ -11,7 +11,7 @@ import fs from "fs";
 import path from "path";
 import { pipeline } from "stream/promises";
 import { Y } from "./constant";
-import { TEMPLATE_PATH, FONT_ROOT, CERTIFICATE_ROOT } from "src/api/config";
+import { TEMPLATE_PATH, FONT_ROOT, CERTIFICATE_ROOT } from "@config";
 import { Text } from "types";
 
 registerFont(FONT_ROOT + "/Songti.ttf", { family: "Songti" });
@@ -112,11 +112,5 @@ export default async function generateCertificate(
   const filePath = path.resolve(CERTIFICATE_ROOT, filename);
   await pipeline(canvas.createPNGStream(), fs.createWriteStream(filePath));
 
-  // const doc = new PDFDocument({
-  //   size: [image.naturalWidth, image.naturalHeight],
-  // });
-  // doc.pipe(fs.createWriteStream(filePath.replace("png", "pdf")));
-  // doc.image(canvas.toBuffer(), 0, 0);
-  // doc.end();
   return { url: digest, filename };
 }

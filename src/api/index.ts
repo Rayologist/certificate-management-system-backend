@@ -6,9 +6,15 @@ import { corsConfig } from "./config";
 import etag from "@middlewares/etag";
 import router from "./routes";
 import session from "@middlewares/session";
+import morgan from "koa-morgan";
+import customDevFormat from "./utils/logger";
+
+morgan.format("custom-dev", customDevFormat);
 
 const app = new Koa();
 
+app.proxy = true;
+app.use(morgan("custom-dev"));
 app.use(async (ctx, next) => {
   try {
     await next();

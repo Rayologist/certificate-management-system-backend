@@ -1,7 +1,6 @@
 import { Middleware } from "@koa/router";
 import { prisma } from "@models";
 
-
 type Payload = {
   auid: string;
   title: string;
@@ -14,7 +13,7 @@ const handleUpdateActivity: Middleware = async (ctx) => {
 
   const { auid, title, startDate, endDate } = ctx.request.body as Payload;
 
-  const data = await prisma.activity.update({
+  await prisma.activity.update({
     where: {
       auid,
     },

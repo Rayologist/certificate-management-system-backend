@@ -14,6 +14,19 @@ const schema = object({
   ),
 });
 
-const validateCreateParticipant = validate(schema);
+const validateCreateParticipant = validate(schema, (errors) => {
+  const path = errors.path?.split(".");
+  const { data } = errors.value;
+  let errorValue;
+  if (Array.isArray(path)) {
+    const index = Number(path[0].replace(/data\[(\d+)\]/g, "$1"));
+    if (!Number.isNaN(index)) {
+      if (path[1]) {
+        errorValue = data[index];
+      }
+    }
+  }
+  return { value: errorValue };
+});
 
 export default validateCreateParticipant;

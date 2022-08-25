@@ -4,7 +4,16 @@ import { CreateParticipantPayload } from "types";
 
 const handleCreateParticipant: Middleware = async (ctx) => {
   const payload = ctx.request.body as { data: CreateParticipantPayload[] };
-  await prisma.participant.createMany({ data: payload.data });
+
+  let { data } = payload;
+
+  data = data.map((value) => {
+    value.email = value.email.trim();
+    value.name = value.name.trim();
+    return value;
+  });
+
+  await prisma.participant.createMany({ data });
   ctx.status = 201;
   ctx.body = { status: "success" };
 };

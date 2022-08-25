@@ -1,6 +1,7 @@
 import nodemailer from "nodemailer";
 
 const { MAIL_HOST, MAIL_ACCOUNT, MAIL_PASSWORD } = process.env;
+
 if (!MAIL_ACCOUNT || !MAIL_HOST || !MAIL_PASSWORD) {
   throw new Error("MAIL_ACCOUNT, MAIL_HOST or MAIL_PASSWORD not found");
 }
@@ -15,4 +16,4 @@ const mailer = nodemailer.createTransport({
   },
 });
 
-export default mailer
+export default mailer;

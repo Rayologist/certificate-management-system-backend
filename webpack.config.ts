@@ -3,13 +3,17 @@ import * as webpack from "webpack";
 import TsconfigPathsPlugin from "tsconfig-paths-webpack-plugin";
 import NodePolyfillPlugin from "node-polyfill-webpack-plugin";
 import webpackNodeExternals from "webpack-node-externals";
+import DotenvWebpackPlugin from "dotenv-webpack";
 
 const config: webpack.Configuration = {
+  target: "node",
+  mode: "production",
   context: path.resolve(__dirname, "src"),
-  entry: ["./index.ts"],
+  entry: ["./index.ts", "./api/index.ts"],
   externals: [webpackNodeExternals()],
   optimization: {
-    minimize: true,
+    minimize: false,
+    nodeEnv: "production"
   },
   module: {
     rules: [
@@ -32,8 +36,10 @@ const config: webpack.Configuration = {
     filename: "index.js",
     path: path.resolve(__dirname, "./dist"),
   },
-  plugins: [new NodePolyfillPlugin()],
-  target: "node"
+  plugins: [
+    new NodePolyfillPlugin(),
+    new DotenvWebpackPlugin({ path: "./.env.production.local" }),
+  ]
 };
 
 export default config;

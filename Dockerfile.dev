@@ -2,15 +2,13 @@ FROM node:16-bullseye
 
 RUN echo "deb http://ftp.tw.debian.org/debian sid main contrib" >> /etc/apt/sources.list
 
-RUN apt-get install -y apt
+RUN apt-get update && apt -y upgrade 
 
-RUN apt update && apt -y upgrade 
+RUN apt-get install -y ttf-mscorefonts-installer
 
-RUN apt install -y ttf-mscorefonts-installer
+# RUN apt-get install dnsutils -y
 
-# RUN apt install dnsutils -y
-
-RUN apt install -y build-essential libcairo2-dev libpango1.0-dev libjpeg-dev libgif-dev librsvg2-dev
+RUN apt-get install -y build-essential libcairo2-dev libpango1.0-dev libjpeg-dev libgif-dev librsvg2-dev
 
 WORKDIR /app
 

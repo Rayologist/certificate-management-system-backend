@@ -1,7 +1,7 @@
 import { Middleware } from "@koa/router";
 import * as jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
-import { ADMIN_COOKIE_NAME } from "src/api/config";
+import { ADMIN_COOKIE_NAME } from "@config";
 
 const handleCreateSession: Middleware = async (ctx) => {
   const { account, password } = ctx.request.body;

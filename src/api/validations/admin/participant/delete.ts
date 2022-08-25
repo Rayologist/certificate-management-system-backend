@@ -2,7 +2,7 @@ import { object, number } from "yup";
 import validate from "../../validator";
 
 const schema = object({
-    id: number().required()
+  id: number().required(),
 });
 
 const validateDeleteParticipant = validate(schema);

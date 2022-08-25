@@ -26,6 +26,7 @@ const handleGetCertificate: Middleware = async (ctx) => {
       url: activity,
     },
   });
+  console.log(data);
 
   if (!data.length || !data[0].certificate.length) {
     ctx.status = 400;

@@ -8,7 +8,7 @@ type Payload = {
 const handleDeleteActivity: Middleware = async (ctx) => {
   const { auid } = ctx.request.body as Payload;
 
-  const data = await prisma.activity.delete({
+  await prisma.activity.delete({
     where: {
       auid,
     },

@@ -1,10 +1,10 @@
 import * as jwt from "jsonwebtoken";
 import { Middleware } from "@koa/router";
-import { ADMIN_COOKIE_NAME } from "src/api/config";
+import { ADMIN_COOKIE_NAME } from "@config";
 
 const verifyJWT = async (token: string, secret: string) => {
   try {
-    const validToken =  jwt.verify(token, secret);
+    const validToken = jwt.verify(token, secret);
     return validToken;
   } catch (error) {
     return false;

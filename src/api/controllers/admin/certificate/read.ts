@@ -10,5 +10,4 @@ const handleGetCertificate: Middleware = async (ctx) => {
   ctx.body = { status: "success", data };
 };
 
-
 export default handleGetCertificate;

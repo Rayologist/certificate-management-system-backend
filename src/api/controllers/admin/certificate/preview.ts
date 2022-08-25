@@ -3,6 +3,7 @@ import { drawCertificate } from "./generator";
 import { CreateCertificatePayload } from "types";
 import { calculateStartPixel } from "./generator";
 import { Y } from "./generator/constant";
+import { cleanTitle } from "@utils";
 
 type Payload = Omit<CreateCertificatePayload, "displayName" | "activityUid"> & {
   dummyName?: string;
@@ -11,11 +12,13 @@ type Payload = Omit<CreateCertificatePayload, "displayName" | "activityUid"> & {
 const handleCertificatePreview: Middleware = async (ctx) => {
   const { title, totalHour, dateString, dummyName } = ctx.request
     .body as Payload;
+
   const { image, canvas, context } = await drawCertificate(
-    title,
+    cleanTitle(title),
     totalHour,
     dateString
   );
+
   if (dummyName) {
     context.font = '100px "Songti"';
 
