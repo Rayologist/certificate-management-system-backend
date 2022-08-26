@@ -16,4 +16,10 @@ const cleanTitle = (input: Text[]) => {
   });
 };
 
-export { mailer, parseCookie, cleanTitle };
+const isUUID = (text: string) => {
+  const regex =
+    /^[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12}$/;
+  return regex.test(text);
+};
+
+export { mailer, parseCookie, cleanTitle, isUUID };

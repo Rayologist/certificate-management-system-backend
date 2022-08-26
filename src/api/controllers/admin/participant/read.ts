@@ -1,17 +1,15 @@
 import { Middleware } from "@koa/router";
 import { prisma } from "@models";
-// const handleGetParticipant: Middleware = async (ctx) => {
-//   const prisma = new PrismaClient();
-
-//   const data = await prisma.activity.findMany({
-//     include: { participant: { include: { participantCertificate: true } } },
-//   });
-//   ctx.body = { status: "success", data };
-// };
+import { isUUID } from "@utils";
 
 const handleGetParticipantByActivity: Middleware = async (ctx) => {
   try {
     const { auid } = ctx.params as { auid: string };
+
+    if (!isUUID(auid)) {
+      ctx.body = { status: "failed" };
+      return;
+    }
 
     const data = await prisma.activity.findUnique({
       where: { auid },
