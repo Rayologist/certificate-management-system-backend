@@ -6,14 +6,20 @@ RUN apt-get update && apt -y upgrade
 
 RUN apt-get install -y ttf-mscorefonts-installer
 
-# RUN apt-get install dnsutils -y
+RUN apt-get install dnsutils -y
 
 RUN apt-get install -y build-essential libcairo2-dev libpango1.0-dev libjpeg-dev libgif-dev librsvg2-dev
+
+RUN npm install -g pnpm
+
+RUN pnpm config set auto-install-peers true
 
 WORKDIR /app
 
 COPY package* /app
 
-RUN npm i
+RUN pnpm i
 
 COPY . /app
+
+RUN npx prisma generate

@@ -1,20 +1,27 @@
-FROM node:16 AS build
-
-WORKDIR /app
-
-COPY package* /app
-RUN npm i
-
-COPY . /app
-RUN npm run build
-
 FROM node:16-bullseye 
+
+RUN npm install -g pnpm
+
+RUN pnpm config set auto-install-peers true
 
 WORKDIR /app
 
 RUN echo "deb http://ftp.tw.debian.org/debian sid main contrib" >> /etc/apt/sources.list
-RUN apt-get update
-RUN apt-get install -y ttf-mscorefonts-installer dnsutils
-RUN apt-get install -y build-essential libcairo2-dev libpango1.0-dev libjpeg-dev libgif-dev librsvg2-dev
-COPY --from=build /app/dist/index.js .
 
+RUN apt-get update && apt-get upgrade -y
+
+RUN apt-get install -y ttf-mscorefonts-installer dnsutils
+
+RUN apt-get install -y build-essential libcairo2-dev libpango1.0-dev libjpeg-dev libgif-dev librsvg2-dev
+
+WORKDIR /app
+
+COPY package* /app
+
+RUN pnpm i
+
+COPY . /app
+
+RUN pnpm build
+
+RUN npx prisma generate
