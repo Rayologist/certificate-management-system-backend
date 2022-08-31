@@ -1,6 +1,6 @@
 import { Middleware } from "@koa/router";
 import { SendCertificatePayload } from "types";
-import { parseCookie } from "@utils";
+import { parseCookie } from "@utils/index";
 
 const hasCert = (): Middleware => async (ctx, next) => {
   const { certificateId, activityUid } = ctx.request

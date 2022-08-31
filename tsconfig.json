@@ -34,7 +34,7 @@
       "@validations/*": ["src/api/validations/*"],
       "@middlewares/*": ["src/api/middlewares/*"],
       "@config": ["src/api/config/index.ts"],
-      "@utils": ["src/api/utils/index.ts"],
+      "@utils/*": ["src/api/utils/*"],
       "@models": ["src/api/models/index.ts"],
       "types": ["src/api/types.ts"]
     },                                      /* Specify a set of entries that re-map imports to additional lookup locations. */

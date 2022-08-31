@@ -7,7 +7,7 @@ import etag from "@middlewares/etag";
 import router from "./routes";
 import session from "@middlewares/session";
 import morgan from "koa-morgan";
-import customDevFormat from "./utils/logger";
+import customDevFormat from "@utils/logger";
 
 morgan.format("custom-dev", customDevFormat);
 

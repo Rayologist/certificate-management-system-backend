@@ -3,7 +3,7 @@ import { drawCertificate } from "./generator";
 import { CreateCertificatePayload } from "types";
 import { calculateStartPixel } from "./generator";
 import { Y } from "./generator/constant";
-import { cleanTitle } from "@utils";
+import { cleanTitle } from "@utils/index";
 
 type Payload = Omit<CreateCertificatePayload, "displayName" | "activityUid"> & {
   dummyName?: string;

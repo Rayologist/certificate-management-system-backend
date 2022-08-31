@@ -2,7 +2,7 @@ import { Middleware } from "@koa/router";
 import generateCertificate from "./generator";
 import { CreateCertificatePayload as Payload } from "types";
 import { prisma } from "@models";
-import { cleanTitle } from "@utils";
+import { cleanTitle } from "@utils/index";
 
 const handleCreateCertificate: Middleware = async (ctx) => {
   let { displayName, title, activityUid, totalHour, dateString } = ctx.request
