@@ -7,10 +7,12 @@ import validateCreateCertificate from "@validations/admin/certificate/create";
 import handleCertificatePreview from "@controllers/admin/certificate/preview";
 import validateDeleteCertificate from "@validations/admin/certificate/delete";
 import handleDeleteCertificate from "@controllers/admin/certificate/delete";
+import handleSendCertificate from "@controllers/admin/certificate/send";
 
 const router = new Router({ prefix: "/certificate" });
 
 router.get("/", handleGetCertificate);
+router.post("/send", handleSendCertificate);
 router.post("/", validateCreateCertificate, handleCreateCertificate);
 router.put("/", validateUpdateCertificate, handleUpdateCertificate);
 router.delete("/", validateDeleteCertificate, handleDeleteCertificate);

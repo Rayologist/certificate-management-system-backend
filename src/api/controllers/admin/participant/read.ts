@@ -1,6 +1,6 @@
 import { Middleware } from "@koa/router";
 import { prisma } from "@models";
-import { isUUID } from "@utils";
+import { isUUID } from "@utils/index";
 
 const handleGetParticipantByActivity: Middleware = async (ctx) => {
   try {
@@ -13,13 +13,21 @@ const handleGetParticipantByActivity: Middleware = async (ctx) => {
 
     const data = await prisma.activity.findUnique({
       where: { auid },
-      include: {
+      select: {
+        title: true,
+        certificate: {
+          select: {
+            id: true,
+            displayName: true,
+          },
+        },
         participant: {
           include: {
             participantCertificate: {
               select: {
                 certificate: {
                   select: {
+                    id: true,
                     displayName: true,
                   },
                 },

@@ -43,3 +43,8 @@ export type SendCertificatePayload = {
   name: string;
   email: string;
 };
+
+export type AdminSendCertificatePayload = {
+  certificateId: number;
+  participantId: number;
+}
