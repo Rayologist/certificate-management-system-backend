@@ -5,8 +5,8 @@ import { CERTIFICATE_ROOT } from '@config';
 import path from 'path';
 import fs from 'fs';
 import { pipeline } from 'stream/promises';
-import { drawCertificate } from './generator';
 import { cleanTitle } from '@utils/index';
+import { drawCertificate } from './generator';
 
 const handleUpateCertificate: Middleware = async (ctx) => {
   const { id, title, totalHour, dateString } = ctx.request.body as Payload;
