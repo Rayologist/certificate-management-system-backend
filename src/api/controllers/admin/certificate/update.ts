@@ -10,10 +10,12 @@ import { pipeline } from "stream/promises";
 const handleUpateCertificate: Middleware = async (ctx) => {
   const { id, title, totalHour, dateString } = ctx.request.body as Payload;
 
+  const cleanedTitle = cleanTitle(title);
+
   const data = await prisma.certificate.update({
     where: { id },
     data: {
-      title,
+      title: cleanedTitle,
       totalHour,
       dateString,
     },
