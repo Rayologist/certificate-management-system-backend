@@ -1,5 +1,5 @@
-import mailer from "..";
-import Mail from "nodemailer/lib/mailer";
+import Mail from 'nodemailer/lib/mailer';
+import mailer from '..';
 
 const content = `敬愛的老師，您好：<br /><br />
 
@@ -35,9 +35,9 @@ We look forward to seeing you again soon!<br /><br />
 
 async function sendCertificate(email: string, attachments: Mail.Attachment[]) {
   return mailer.sendMail({
-    from: "國立臺灣大學雙語教育中心 <ntucbe@ntu.edu.tw>",
+    from: '國立臺灣大學雙語教育中心 <ntucbe@ntu.edu.tw>',
     to: email,
-    subject: "2022 NTU EMI Workshop - Certificate of Attendance",
+    subject: '2022 NTU EMI Workshop - Certificate of Attendance',
     html: content,
     attachments,
   });

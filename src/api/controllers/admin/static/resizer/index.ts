@@ -1,9 +1,9 @@
-import { RouterContext } from "@koa/router";
-import fs from "fs";
-import sharp, { ResizeOptions, Sharp } from "sharp";
+import { RouterContext } from '@koa/router';
+import fs from 'fs';
+import sharp, { ResizeOptions, Sharp } from 'sharp';
 
-import etag from "etag";
-import parseImageSize from "./imageSizeParser";
+import etag from 'etag';
+import parseImageSize from './imageSizeParser';
 
 const resizeImage = async (ctx: RouterContext) => {
   await parseImageSize(ctx);

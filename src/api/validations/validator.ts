@@ -1,26 +1,24 @@
-import { Next } from "koa";
-import { SchemaOf, ValidationError } from "yup";
-import { RouterContext } from "@koa/router";
+import { SchemaOf, ValidationError } from 'yup';
+import { Middleware } from '@koa/router';
 
-function validate<T>(
-  schema: SchemaOf<T>,
-  returnMessage?: (errors: ValidationError) => object
-) {
-  return async (ctx: RouterContext, next: Next) => {
+const validate =
+  <T>(schema: SchemaOf<T>, returnMessage?: (errors: ValidationError) => object): Middleware =>
+  async (ctx, next) => {
     try {
       await schema.validate(ctx.request.body);
-      return next();
+      return await next();
     } catch (err) {
       const errors = err as ValidationError;
-      console.log(errors);
+
+      console.log(errors); // eslint-disable-line no-console
       ctx.status = 422;
-      if (typeof returnMessage === "function") {
-        ctx.body = { status: "failed", data: returnMessage(errors) };
-        return;
+      if (typeof returnMessage === 'function') {
+        ctx.body = { status: 'failed', data: returnMessage(errors) };
+        return null;
       }
-      ctx.body = { status: "failed", msg: "invalid request body" };
+      ctx.body = { status: 'failed', msg: 'invalid request body' };
     }
+    return null;
   };
-}
 
 export default validate;

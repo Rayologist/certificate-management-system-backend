@@ -1,27 +1,27 @@
-import { Middleware } from "@koa/router";
-import { CERTIFICATE_ROOT } from "@config";
-import send from "koa-send";
-import path from "path";
-import resizeImage from "./resizer";
-import { prisma } from "@models";
+import { Middleware } from '@koa/router';
+import { CERTIFICATE_ROOT } from '@config';
+import send from 'koa-send';
+import path from 'path';
+import { prisma } from '@models';
+import resizeImage from './resizer';
 
 const handleGetStaticCertificate: Middleware = async (ctx) => {
-  let { url } = ctx.params;
+  const { url: params } = ctx.params;
 
-  url = url.split("=")[0];
+  const [url] = params.split('=');
 
-  if (url === "template") {
-    const filename = "template.png";
-    ctx.set("Content-Disposition", `filename=${filename}`);
+  if (url === 'template') {
+    const filename = 'template.png';
+    ctx.set('Content-Disposition', `filename=${filename}`);
 
     await send(ctx, filename, {
-      root: path.resolve(CERTIFICATE_ROOT, ".."),
-      setHeaders: (res, path, stats) => {
-        res.setHeader("Cache-Control", "private, max-age=0");
+      root: path.resolve(CERTIFICATE_ROOT, '..'),
+      setHeaders: (res) => {
+        res.setHeader('Cache-Control', 'private, max-age=0');
       },
     });
 
-    return;
+    return null;
   }
 
   const cert = await prisma.certificate.findMany({
@@ -38,27 +38,29 @@ const handleGetStaticCertificate: Middleware = async (ctx) => {
   if (cert.length) {
     if (!cert[0].available) {
       ctx.status = 503;
-      ctx.set("Retry-After", "5");
-      return;
+      ctx.set('Retry-After', '5');
+      return null;
     }
 
     const { filename, displayName } = cert[0];
 
-    ctx.set("Content-Disposition", `filename=${displayName}`);
+    ctx.set('Content-Disposition', `filename=${displayName}`);
 
     await send(ctx, filename, {
       root: CERTIFICATE_ROOT,
-      setHeaders: (res, path, stats) => {
-        res.setHeader("Cache-Control", "private, max-age=0");
+      setHeaders: (res) => {
+        res.setHeader('Cache-Control', 'private, max-age=0');
       },
     });
 
     await resizeImage(ctx);
 
-    return;
+    return null;
   }
 
   ctx.status = 404;
+
+  return null;
 };
 
 export default handleGetStaticCertificate;

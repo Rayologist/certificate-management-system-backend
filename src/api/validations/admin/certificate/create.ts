@@ -1,5 +1,5 @@
-import { object, string, array, number } from "yup";
-import validate from "../../validator";
+import { object, string, array, number } from 'yup';
+import validate from '../../validator';
 
 const schema = object({
   activityUid: string().uuid().required(),
@@ -9,7 +9,7 @@ const schema = object({
       object({
         text: string().required(),
         weight: string(),
-      })
+      }),
     )
     .required()
     .min(1)

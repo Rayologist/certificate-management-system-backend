@@ -1,5 +1,5 @@
-import { Middleware } from "@koa/router";
-import { prisma } from "@models";
+import { Middleware } from '@koa/router';
+import { prisma } from '@models';
 
 const handleGetCertificate: Middleware = async (ctx) => {
   const { activity, certificate: certUrl } = ctx.request.query as {
@@ -9,7 +9,7 @@ const handleGetCertificate: Middleware = async (ctx) => {
 
   if (!activity || !certUrl) {
     ctx.status = 400;
-    ctx.body = { status: "failed" };
+    ctx.body = { status: 'failed' };
     return;
   }
 
@@ -29,7 +29,7 @@ const handleGetCertificate: Middleware = async (ctx) => {
 
   if (!data.length || !data[0].certificate.length) {
     ctx.status = 400;
-    ctx.body = { status: "failed" };
+    ctx.body = { status: 'failed' };
     return;
   }
 
@@ -42,7 +42,7 @@ const handleGetCertificate: Middleware = async (ctx) => {
     activityUid: auid,
   };
 
-  ctx.body = { status: "success", data: flattened };
+  ctx.body = { status: 'success', data: flattened };
 };
 
 export default handleGetCertificate;

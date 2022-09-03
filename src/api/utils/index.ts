@@ -1,5 +1,5 @@
-import mailer from "./email";
-import { Text } from "types";
+import { Text } from 'types';
+import mailer from './email';
 
 const parseCookie = <T>(text: string): T | false => {
   try {
@@ -9,12 +9,11 @@ const parseCookie = <T>(text: string): T | false => {
   }
 };
 
-const cleanTitle = (input: Text[]) => {
-  return input.map((value) => {
-    value.text = value.text.trim();
-    return value;
+const cleanTitle = (input: Text[]) =>
+  input.map((value) => {
+    const text = value.text.trim();
+    return { ...value, text };
   });
-};
 
 const isUUID = (text: string) => {
   const regex =

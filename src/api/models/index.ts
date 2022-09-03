@@ -1,3 +1,3 @@
-import prisma from "./prisma";
+import prisma from './prisma';
 
-export { prisma };
+export { prisma }; // eslint-disable-line import/prefer-default-export

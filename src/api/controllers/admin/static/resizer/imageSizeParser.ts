@@ -1,20 +1,21 @@
-import { RouterContext } from "@koa/router";
+import { RouterContext } from '@koa/router';
 
 const parse = (qs: string) => {
-  const _parse = (str: string) => {
+  const parseQS = (str: string) => {
     const regex = /^([w|h])(\d+)$/;
     return str.match(regex);
   };
 
-  const query = qs.split("-");
+  const query = qs.split('-');
   const parsed: { [key: string]: string } = {};
 
-  for (let i = 0; i < query.length; ++i) {
-    const result = _parse(query[i]);
+  for (let i = 0; i < query.length; i += 1) {
+    const result = parseQS(query[i]);
     if (result == null) {
       return false;
     }
-    parsed[result[1]] = result[2];
+    const [, widthOrHeight, number] = result;
+    parsed[widthOrHeight] = number;
   }
 
   return parsed;
@@ -22,7 +23,7 @@ const parse = (qs: string) => {
 
 const parseImageSize = async (ctx: RouterContext) => {
   const { url } = ctx.params as { url: string };
-  const splited = url.split("=");
+  const splited = url.split('=');
   if (splited.length === 2) {
     const qs = splited[1];
     const parsed = parse(qs);

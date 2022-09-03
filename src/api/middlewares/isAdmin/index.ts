@@ -1,4 +1,4 @@
-import { Middleware } from "@koa/router";
+import { Middleware } from '@koa/router';
 
 const isAdmin = (): Middleware => async (ctx, next) => {
   if (!Object.keys(ctx.session).length) {
@@ -6,7 +6,7 @@ const isAdmin = (): Middleware => async (ctx, next) => {
     return;
   }
 
-  if (ctx.session.role !== "admin") {
+  if (ctx.session.role !== 'admin') {
     ctx.status = 403;
     return;
   }

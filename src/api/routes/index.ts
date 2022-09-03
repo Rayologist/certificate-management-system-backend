@@ -1,17 +1,17 @@
-import Router from "@koa/router";
-import { default as privateRouter } from "./private";
-import { default as certificateRouter } from "./cert";
-import { PREFIX } from "@config";
+import Router from '@koa/router';
+import { PREFIX } from '@config';
+import privateRouter from './private';
+import certificateRouter from './cert';
 
-const router = new Router();
+const entry = new Router();
 
-router.prefix(PREFIX);
+entry.prefix(PREFIX);
 
 const routers = [privateRouter, certificateRouter];
 
-for (const _router of routers) {
-  router.use(_router.routes());
-  router.use(_router.allowedMethods());
-}
+routers.forEach((router) => {
+  entry.use(router.routes());
+  entry.use(router.allowedMethods());
+});
 
-export default router;
+export default entry;

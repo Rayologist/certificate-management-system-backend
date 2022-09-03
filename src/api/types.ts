@@ -1,5 +1,5 @@
 export type Text = {
-  weight?: "bold" | "italic" | "";
+  weight?: 'bold' | 'italic' | '';
   text: string;
 };
 
@@ -47,4 +47,4 @@ export type SendCertificatePayload = {
 export type AdminSendCertificatePayload = {
   certificateId: number;
   participantId: number;
-}
+};

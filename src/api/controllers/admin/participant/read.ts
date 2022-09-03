@@ -1,13 +1,13 @@
-import { Middleware } from "@koa/router";
-import { prisma } from "@models";
-import { isUUID } from "@utils/index";
+import { Middleware } from '@koa/router';
+import { prisma } from '@models';
+import { isUUID } from '@utils/index';
 
 const handleGetParticipantByActivity: Middleware = async (ctx) => {
   try {
     const { auid } = ctx.params as { auid: string };
 
     if (!isUUID(auid)) {
-      ctx.body = { status: "failed" };
+      ctx.body = { status: 'failed' };
       return;
     }
 
@@ -38,11 +38,10 @@ const handleGetParticipantByActivity: Middleware = async (ctx) => {
       },
     });
 
-    ctx.body = { status: "success", data };
+    ctx.body = { status: 'success', data };
   } catch (error) {
-    console.error(error);
     ctx.status = 400;
-    ctx.body = { status: "failed" };
+    ctx.body = { status: 'failed' };
   }
 };
 
@@ -58,7 +57,7 @@ const handleGetParticipantStats: Middleware = async (ctx) => {
       },
     },
   });
-  ctx.body = { status: "success", data };
+  ctx.body = { status: 'success', data };
 };
 
 export { handleGetParticipantByActivity, handleGetParticipantStats };

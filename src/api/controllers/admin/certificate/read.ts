@@ -1,5 +1,5 @@
-import { Middleware } from "@koa/router";
-import { prisma } from "@models";
+import { Middleware } from '@koa/router';
+import { prisma } from '@models';
 
 const handleGetCertificate: Middleware = async (ctx) => {
   const data = await prisma.activity.findMany({
@@ -7,7 +7,7 @@ const handleGetCertificate: Middleware = async (ctx) => {
       certificate: true,
     },
   });
-  ctx.body = { status: "success", data };
+  ctx.body = { status: 'success', data };
 };
 
 export default handleGetCertificate;

@@ -1,5 +1,5 @@
-import { object, string, array } from "yup";
-import validate from "../../validator";
+import { object, string, array } from 'yup';
+import validate from '../../validator';
 
 const schema = object({
   data: array().of(
@@ -10,16 +10,16 @@ const schema = object({
       title: string().required(),
       email: string().required(),
       phone: string().required(),
-    })
+    }),
   ),
 });
 
 const validateCreateParticipant = validate(schema, (errors) => {
-  const path = errors.path?.split(".");
+  const path = errors.path?.split('.');
   const { data } = errors.value;
   let errorValue;
   if (Array.isArray(path)) {
-    const index = Number(path[0].replace(/data\[(\d+)\]/g, "$1"));
+    const index = Number(path[0].replace(/data\[(\d+)\]/g, '$1'));
     if (!Number.isNaN(index)) {
       if (path[1]) {
         errorValue = data[index];

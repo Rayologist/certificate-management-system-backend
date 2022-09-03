@@ -1,10 +1,9 @@
-import { Middleware } from "@koa/router";
-import { SendCertificatePayload } from "types";
-import { parseCookie } from "@utils/index";
+import { Middleware } from '@koa/router';
+import { SendCertificatePayload } from 'types';
+import { parseCookie } from '@utils/index';
 
 const hasCert = (): Middleware => async (ctx, next) => {
-  const { certificateId, activityUid } = ctx.request
-    .body as SendCertificatePayload;
+  const { certificateId, activityUid } = ctx.request.body as SendCertificatePayload;
 
   const cookie = ctx.cookies.get(activityUid);
   ctx.certs = [];
@@ -22,7 +21,7 @@ const hasCert = (): Middleware => async (ctx, next) => {
   }
 
   if (data.includes(certificateId)) {
-    ctx.body = { status: "success", msg: "already sent" };
+    ctx.body = { status: 'success', msg: 'already sent' };
     return;
   }
 

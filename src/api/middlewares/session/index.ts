@@ -1,6 +1,6 @@
-import * as jwt from "jsonwebtoken";
-import { Middleware } from "@koa/router";
-import { ADMIN_COOKIE_NAME } from "@config";
+import * as jwt from 'jsonwebtoken';
+import { Middleware } from '@koa/router';
+import { ADMIN_COOKIE_NAME } from '@config';
 
 const verifyJWT = async (token: string, secret: string) => {
   try {

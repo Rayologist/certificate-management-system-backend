@@ -1,13 +1,12 @@
-import { drawName } from "@controllers/admin/certificate/generator";
-import PDFDocument from "pdfkit";
-import { Middleware } from "@koa/router";
-import { AdminSendCertificatePayload } from "types";
-import { prisma } from "@models";
-import sendCertificate from "@utils/email/sender";
+import { drawName } from '@controllers/admin/certificate/generator';
+import PDFDocument from 'pdfkit';
+import { Middleware } from '@koa/router';
+import { AdminSendCertificatePayload } from 'types';
+import { prisma } from '@models';
+import sendCertificate from '@utils/email/sender';
 
 const handleSendCertificate: Middleware = async (ctx) => {
-  const { participantId, certificateId } = ctx.request
-    .body as AdminSendCertificatePayload;
+  const { participantId, certificateId } = ctx.request.body as AdminSendCertificatePayload;
 
   const [certificate, user] = await prisma.$transaction([
     prisma.certificate.findUnique({
@@ -34,14 +33,14 @@ const handleSendCertificate: Middleware = async (ctx) => {
 
   if (certificate == null || !user) {
     ctx.status = 400;
-    ctx.body = { status: "failed" };
+    ctx.body = { status: 'failed' };
     return;
   }
 
   if (!certificate.available) {
     ctx.status = 503;
-    ctx.set("Retry-After", "5");
-    ctx.body = { status: "failed", msg: "unavaliable" };
+    ctx.set('Retry-After', '5');
+    ctx.body = { status: 'failed', msg: 'unavaliable' };
     return;
   }
 
@@ -55,17 +54,17 @@ const handleSendCertificate: Middleware = async (ctx) => {
     doc.image(canvas.toBuffer(), 0, 0);
     doc.end();
 
-    let buffers: Buffer[] = [];
+    const buffers: Buffer[] = [];
 
-    doc.on("data", (stream) => buffers.push(stream));
-    doc.on("end", () => {
+    doc.on('data', (stream) => buffers.push(stream));
+    doc.on('end', () => {
       const buffer = Buffer.concat(buffers);
       resolve(buffer);
     });
   });
 
-  const userName = user.name.replace(/\ /g, "_");
-  const certName = certificate.displayName.replace(/\ /g, "_");
+  const userName = user.name.replace(/\s/g, '_');
+  const certName = certificate.displayName.replace(/\s/g, '_');
   await sendCertificate(user.email, [
     {
       filename: `${userName}-${certName}.pdf`,
@@ -84,7 +83,7 @@ const handleSendCertificate: Middleware = async (ctx) => {
     });
   }
 
-  ctx.body = { status: "success" };
+  ctx.body = { status: 'success' };
 };
 
 export default handleSendCertificate;

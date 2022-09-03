@@ -1,9 +1,9 @@
-import { Middleware } from "@koa/router";
+import { Middleware } from '@koa/router';
 
 const handleGetSession: Middleware = async (ctx) => {
   if (ctx.session.role) {
     ctx.body = {
-      status: "success",
+      status: 'success',
       data: {
         role: ctx.session.role,
       },
@@ -11,7 +11,7 @@ const handleGetSession: Middleware = async (ctx) => {
 
     return;
   }
-  ctx.body = { status: "success" };
+  ctx.body = { status: 'success' };
 };
 
 export default handleGetSession;

@@ -1,10 +1,10 @@
-import app from "./api";
-import { config } from "dotenv";
+import { config } from 'dotenv';
+import app from './api';
 
 config();
 
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
-  console.log(`⚡️[server] Listening on port ${PORT}`);
+  console.log(`⚡️[server] Listening on port ${PORT}`); // eslint-disable-line no-console
 });

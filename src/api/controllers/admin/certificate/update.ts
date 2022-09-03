@@ -1,11 +1,12 @@
-import { Middleware } from "@koa/router";
-import { prisma } from "@models";
-import { UpdateCertificatePayload as Payload, Text } from "types";
-import { drawCertificate } from "./generator";
-import { CERTIFICATE_ROOT } from "@config";
-import path from "path";
-import fs from "fs";
-import { pipeline } from "stream/promises";
+import { Middleware } from '@koa/router';
+import { prisma } from '@models';
+import { UpdateCertificatePayload as Payload, Text } from 'types';
+import { CERTIFICATE_ROOT } from '@config';
+import path from 'path';
+import fs from 'fs';
+import { pipeline } from 'stream/promises';
+import { drawCertificate } from './generator';
+import { cleanTitle } from '@utils/index';
 
 const handleUpateCertificate: Middleware = async (ctx) => {
   const { id, title, totalHour, dateString } = ctx.request.body as Payload;
@@ -21,9 +22,10 @@ const handleUpateCertificate: Middleware = async (ctx) => {
     },
   });
 
+  /* eslint-disable @typescript-eslint/no-shadow */
   {
-    const { filename, title: _title, totalHour, dateString } = data;
-    const title = _title as Text[];
+    const { filename, title: certTitle, totalHour, dateString } = data;
+    const title = certTitle as Text[];
     const { canvas } = await drawCertificate(title, totalHour, dateString);
     const filePath = path.resolve(CERTIFICATE_ROOT, filename);
 
@@ -40,7 +42,7 @@ const handleUpateCertificate: Middleware = async (ctx) => {
     });
   }
 
-  ctx.body = { status: "success" };
+  ctx.body = { status: 'success' };
 };
 
 export default handleUpateCertificate;

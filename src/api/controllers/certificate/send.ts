@@ -1,13 +1,12 @@
-import { drawName } from "@controllers/admin/certificate/generator";
-import PDFDocument from "pdfkit";
-import { Middleware } from "@koa/router";
-import { SendCertificatePayload } from "types";
-import { prisma } from "@models";
-import sendCertificate from "@utils/email/sender";
+import { drawName } from '@controllers/admin/certificate/generator';
+import PDFDocument from 'pdfkit';
+import { Middleware } from '@koa/router';
+import { SendCertificatePayload } from 'types';
+import { prisma } from '@models';
+import sendCertificate from '@utils/email/sender';
 
 const handleSendCertificate: Middleware = async (ctx) => {
-  const { activityUid, certificateId, name, email } = ctx.request
-    .body as SendCertificatePayload;
+  const { activityUid, certificateId, name, email } = ctx.request.body as SendCertificatePayload;
 
   const [certificate, user] = await prisma.$transaction([
     prisma.certificate.findUnique({
@@ -30,14 +29,14 @@ const handleSendCertificate: Middleware = async (ctx) => {
 
   if (certificate == null || !user.length) {
     ctx.status = 400;
-    ctx.body = { status: "failed" };
+    ctx.body = { status: 'failed' };
     return;
   }
 
   if (!certificate.available) {
     ctx.status = 503;
-    ctx.set("Retry-After", "5");
-    ctx.body = { status: "failed", msg: "unavaliable" };
+    ctx.set('Retry-After', '5');
+    ctx.body = { status: 'failed', msg: 'unavaliable' };
     return;
   }
 
@@ -48,7 +47,7 @@ const handleSendCertificate: Middleware = async (ctx) => {
       httpOnly: true,
       maxAge: 1000 * 60 * 60 * 24,
     });
-    ctx.body = { status: "success", msg: "already sent" };
+    ctx.body = { status: 'success', msg: 'already sent' };
 
     return;
   }
@@ -63,17 +62,17 @@ const handleSendCertificate: Middleware = async (ctx) => {
     doc.image(canvas.toBuffer(), 0, 0);
     doc.end();
 
-    let buffers: Buffer[] = [];
+    const buffers: Buffer[] = [];
 
-    doc.on("data", (stream) => buffers.push(stream));
-    doc.on("end", () => {
+    doc.on('data', (stream) => buffers.push(stream));
+    doc.on('end', () => {
       const buffer = Buffer.concat(buffers);
       resolve(buffer);
     });
   });
 
-  const userName = name.replace(/\ /g, "_");
-  const certName = certificate.displayName.replace(/\ /g, "_");
+  const userName = name.replace(/\s/g, '_');
+  const certName = certificate.displayName.replace(/\s/g, '_');
   await sendCertificate(user[0].email, [
     {
       filename: `${userName}-${certName}.pdf`,
@@ -95,7 +94,7 @@ const handleSendCertificate: Middleware = async (ctx) => {
     maxAge: 1000 * 60 * 60 * 24,
   });
 
-  ctx.body = { status: "success" };
+  ctx.body = { status: 'success' };
 };
 
 export default handleSendCertificate;

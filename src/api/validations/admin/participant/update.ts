@@ -1,5 +1,5 @@
-import { object, string, number } from "yup";
-import validate from "../../validator";
+import { object, string, number } from 'yup';
+import validate from '../../validator';
 
 const schema = object({
   id: number().required(),

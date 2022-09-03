@@ -1,6 +1,6 @@
-import { Middleware } from "@koa/router";
-import { prisma } from "@models";
-import { createHash } from "crypto";
+import { Middleware } from '@koa/router';
+import { prisma } from '@models';
+import { createHash } from 'crypto';
 
 type Payload = {
   title: string;
@@ -12,11 +12,11 @@ const handleCreateActivity: Middleware = async (ctx) => {
   const { title, startDate, endDate } = ctx.request.body as Payload;
 
   // generate url
-  const hash = createHash("sha256");
+  const hash = createHash('sha256');
   hash.update(JSON.stringify(ctx.body) + new Date().toString());
-  const url = hash.digest("base64url");
+  const url = hash.digest('base64url');
 
-  const data = await prisma.activity.create({
+  await prisma.activity.create({
     data: {
       title,
       startDate,
@@ -25,7 +25,7 @@ const handleCreateActivity: Middleware = async (ctx) => {
     },
   });
   ctx.status = 201;
-  ctx.body = { status: "success" };
+  ctx.body = { status: 'success' };
 };
 
 export default handleCreateActivity;

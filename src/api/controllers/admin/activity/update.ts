@@ -1,5 +1,5 @@
-import { Middleware } from "@koa/router";
-import { prisma } from "@models";
+import { Middleware } from '@koa/router';
+import { prisma } from '@models';
 
 type Payload = {
   auid: string;
@@ -24,7 +24,7 @@ const handleUpdateActivity: Middleware = async (ctx) => {
     },
   });
 
-  ctx.body = { status: "success" };
+  ctx.body = { status: 'success' };
 };
 
 export default handleUpdateActivity;
