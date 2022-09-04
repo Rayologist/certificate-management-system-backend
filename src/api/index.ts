@@ -19,7 +19,7 @@ app.use(async (ctx, next) => {
   try {
     await next();
   } catch (error) {
-    // eslint-disable-line no-console
+    // eslint-disable-nex-line no-console
     console.error(error);
     ctx.body = { status: 'failed' };
   }
