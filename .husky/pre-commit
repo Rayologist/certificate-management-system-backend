@@ -1,0 +1,6 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+pnpm -s dlx pretty-quick --staged
+pnpm typecheck
+pnpm lint
