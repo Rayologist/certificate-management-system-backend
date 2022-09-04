@@ -6,5 +6,6 @@ config();
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
-  console.log(`⚡️[server] Listening on port ${PORT}`); // eslint-disable-line no-console
+  // eslint-disable-next-line no-console
+  console.log(`⚡️[server] Listening on port ${PORT}`);
 });
