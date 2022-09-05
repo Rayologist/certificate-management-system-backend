@@ -1,6 +1,6 @@
 {
-  "*.ts": [
-    "pnpm format",
-    "pnpm lint"
+  "*.{ts,js}": [
+    "prettier --write",
+    "eslint"
   ]
 }
