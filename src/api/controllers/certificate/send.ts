@@ -1,9 +1,42 @@
-import { drawName } from '@controllers/admin/certificate/generator';
-import PDFDocument from 'pdfkit';
 import { Middleware } from '@koa/router';
-import { SendCertificatePayload } from 'types';
-import { prisma } from '@models';
-import sendCertificate from '@utils/email/sender';
+import { SendCertificatePayload, MQSendCertficatePayload } from 'types';
+import { prisma, connect } from '@models';
+import format from 'date-fns/format';
+
+async function publishCertificateEmail({
+  filename,
+  displayName,
+  participantName,
+  email,
+}: MQSendCertficatePayload) {
+  try {
+    const queue = 'email';
+    const conn = await connect();
+    const channel = await conn.createChannel();
+
+    await channel.assertQueue(queue);
+
+    channel.sendToQueue(
+      queue,
+      Buffer.from(
+        JSON.stringify({
+          filename,
+          displayName,
+          participantName,
+          email,
+        }),
+      ),
+    );
+
+    await channel.close();
+    await conn.close();
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.error(format(new Date(), 'yyyy-MM-dd HH:mm:ss'), error);
+    return false;
+  }
+  return null;
+}
 
 const handleSendCertificate: Middleware = async (ctx) => {
   const { activityUid, certificateId, name, email } = ctx.request.body as SendCertificatePayload;
@@ -29,15 +62,15 @@ const handleSendCertificate: Middleware = async (ctx) => {
 
   if (certificate == null || !user.length) {
     ctx.status = 400;
-    ctx.body = { status: 'failed' };
-    return;
+    ctx.body = { status: 'failed', msg: 'unauthorized' };
+    return null;
   }
 
   if (!certificate.available) {
     ctx.status = 503;
     ctx.set('Retry-After', '5');
     ctx.body = { status: 'failed', msg: 'unavaliable' };
-    return;
+    return null;
   }
 
   if (user[0].participantCertificate.length) {
@@ -49,36 +82,21 @@ const handleSendCertificate: Middleware = async (ctx) => {
     });
     ctx.body = { status: 'success', msg: 'already sent' };
 
-    return;
+    return null;
   }
 
-  const { canvas, image } = await drawName(certificate.filename, name);
-
-  const data = await new Promise<Buffer>((resolve) => {
-    const doc = new PDFDocument({
-      size: [image.naturalWidth, image.naturalHeight],
-    });
-
-    doc.image(canvas.toBuffer(), 0, 0);
-    doc.end();
-
-    const buffers: Buffer[] = [];
-
-    doc.on('data', (stream) => buffers.push(stream));
-    doc.on('end', () => {
-      const buffer = Buffer.concat(buffers);
-      resolve(buffer);
-    });
+  const publishResult = await publishCertificateEmail({
+    filename: certificate.filename,
+    displayName: certificate.displayName,
+    participantName: name,
+    email: user[0].email,
   });
 
-  const userName = name.replace(/\s/g, '_');
-  const certName = certificate.displayName.replace(/\s/g, '_');
-  await sendCertificate(user[0].email, [
-    {
-      filename: `${userName}-${certName}.pdf`,
-      content: data,
-    },
-  ]);
+  if (publishResult === false) {
+    ctx.status = 500;
+    ctx.body = { status: 'failed', msg: 'mail server error' };
+    return null;
+  }
 
   await prisma.participantCertificate.create({
     data: {
@@ -95,6 +113,8 @@ const handleSendCertificate: Middleware = async (ctx) => {
   });
 
   ctx.body = { status: 'success' };
+
+  return null;
 };
 
 export default handleSendCertificate;
