@@ -2,6 +2,16 @@
   "apps": [
     {
       "script": "pnpm",
+      "args": "start:queue:pm2",
+      "cwd": "/home/rayologist/certificate-management-system-backend/",
+      "name": "email-queue-worker-0",
+      "env": {
+        "NODE_ENV": "production"
+      },
+      "max_memory_restart": "2G"
+    },
+    {
+      "script": "pnpm",
       "args": "start:pm2",
       "cwd": "/home/rayologist/certificate-management-system-backend/",
       "name": "cert-backend-worker-0",
