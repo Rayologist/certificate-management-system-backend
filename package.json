@@ -6,6 +6,7 @@
   "private": true,
   "scripts": {
     "dev": "nodemon src/index.ts",
+    "dev:queue": "nodemon queue/index.ts",
     "start": "PORT=3001 NODE_ENV=production node -r dotenv/config dist/src/index.js",
     "start:pm2": "node -r dotenv/config dist/src/index.js",
     "build": "tsc && tsc-alias",
@@ -21,8 +22,10 @@
     "@koa/cors": "^3.4.1",
     "@koa/router": "^12.0.0",
     "@prisma/client": "^4.3.1",
+    "amqplib": "^0.10.3",
     "bcrypt": "^5.0.1",
     "canvas": "^2.9.3",
+    "date-fns": "^2.29.2",
     "debug": "^4.3.4",
     "dotenv": "^16.0.2",
     "etag": "^1.8.1",
@@ -42,6 +45,7 @@
     "yup": "^0.32.11"
   },
   "devDependencies": {
+    "@types/amqplib": "^0.8.2",
     "@types/bcrypt": "^5.0.0",
     "@types/debug": "^4.1.7",
     "@types/etag": "^1.8.1",
