@@ -1,4 +1,10 @@
-FROM node:16-bullseye 
+FROM node:16-bullseye-slim
+
+RUN echo "deb http://ftp.tw.debian.org/debian sid main contrib" >> /etc/apt/sources.list
+
+RUN apt-get update \
+    && apt-get install -y ttf-mscorefonts-installer dnsutils build-essential libcairo2-dev libpango1.0-dev libjpeg-dev libgif-dev librsvg2-dev \
+    && apt-get clean
 
 RUN npm install -g pnpm
 
@@ -6,15 +12,8 @@ RUN pnpm config set auto-install-peers true
 
 WORKDIR /app
 
-RUN echo "deb http://ftp.tw.debian.org/debian sid main contrib" >> /etc/apt/sources.list
-
-RUN apt-get update && apt-get upgrade -y
-
-RUN apt-get install -y ttf-mscorefonts-installer dnsutils
-
-RUN apt-get install -y build-essential libcairo2-dev libpango1.0-dev libjpeg-dev libgif-dev librsvg2-dev
-
 COPY package.json /app
+COPY pnpm-lock.yaml /app
 
 RUN pnpm i
 
