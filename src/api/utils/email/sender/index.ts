@@ -3,7 +3,7 @@ import mailer from '..';
 
 const content = `敬愛的老師，您好：<br /><br />
 
-感謝您8月26日參與臺大雙語教育中心主辦的的全英語授課工作坊。<br />
+感謝您參與臺大雙語教育中心主辦的全英語授課工作坊。<br />
 附件為時數認證書，請查收。<br /><br />
 
 歡迎您持續關注本中心的<a rel="noreferrer noopener" href="https://cbe.ntu.edu.tw/">官網</a>及社群媒體，以利未來接收更多與EMI相關的活動消息。<br />
