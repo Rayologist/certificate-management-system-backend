@@ -6,7 +6,8 @@ import { prisma } from '@models';
 import sendCertificate from '@utils/email/sender';
 
 const handleSendCertificate: Middleware = async (ctx) => {
-  const { participantId, certificateId } = ctx.request.body as AdminSendCertificatePayload;
+  const { participantId, certificateId, altName } = ctx.request.body as AdminSendCertificatePayload;
+  const alternativeName = altName.trim();
 
   const [certificate, user] = await prisma.$transaction([
     prisma.certificate.findUnique({
@@ -44,7 +45,9 @@ const handleSendCertificate: Middleware = async (ctx) => {
     return;
   }
 
-  const { canvas, image } = await drawName(certificate.filename, user.name);
+  const nameOnCert = alternativeName === '' ? user.name : alternativeName;
+
+  const { canvas, image } = await drawName(certificate.filename, nameOnCert);
 
   const data = await new Promise<Buffer>((resolve) => {
     const doc = new PDFDocument({
@@ -63,7 +66,7 @@ const handleSendCertificate: Middleware = async (ctx) => {
     });
   });
 
-  const userName = user.name.replace(/\s/g, '_');
+  const userName = nameOnCert.replace(/\s/g, '_');
   const certName = certificate.displayName.replace(/\s/g, '_');
   await sendCertificate(user.email, [
     {

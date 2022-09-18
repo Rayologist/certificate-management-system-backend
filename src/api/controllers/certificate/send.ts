@@ -39,7 +39,8 @@ async function publishCertificateEmail({
 }
 
 const handleSendCertificate: Middleware = async (ctx) => {
-  const { activityUid, certificateId, name, email } = ctx.request.body as SendCertificatePayload;
+  const { activityUid, certificateId, altName, name, email } = ctx.request
+    .body as SendCertificatePayload;
 
   const [certificate, user] = await prisma.$transaction([
     prisma.certificate.findUnique({
@@ -85,10 +86,12 @@ const handleSendCertificate: Middleware = async (ctx) => {
     return null;
   }
 
+  const participantName = altName.trim() === '' ? name : altName;
+
   const publishResult = await publishCertificateEmail({
     filename: certificate.filename,
     displayName: certificate.displayName,
-    participantName: name,
+    participantName,
     email: user[0].email,
   });
 
