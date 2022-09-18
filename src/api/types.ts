@@ -41,10 +41,12 @@ export type SendCertificatePayload = {
   activityUid: string;
   certificateId: number;
   name: string;
+  altName: string;
   email: string;
 };
 
 export type AdminSendCertificatePayload = {
+  altName: string;
   certificateId: number;
   participantId: number;
 };
