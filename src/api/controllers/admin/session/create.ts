@@ -3,7 +3,16 @@ import * as jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 import { ADMIN_COOKIE_NAME } from '@config';
 
-const handleCreateSession: Middleware = async (ctx) => {
+type RequestBody = {
+  request: {
+    body: {
+      account: string;
+      password: string;
+    };
+  };
+};
+
+const handleCreateSession: Middleware<{}, RequestBody> = async (ctx) => {
   const { account, password } = ctx.request.body;
   const { ACCOUNT, PASSWORD, JWT_SECRET } = process.env;
   if (!(ACCOUNT && PASSWORD && JWT_SECRET)) {
