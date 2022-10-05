@@ -4,6 +4,7 @@ import { Middleware } from '@koa/router';
 import { AdminSendCertificatePayload } from 'types';
 import { prisma } from '@models';
 import sendCertificate from '@utils/email/sender';
+import sanitize from 'sanitize-filename';
 
 const handleSendCertificate: Middleware = async (ctx) => {
   const { participantId, certificateId, altName } = ctx.request.body as AdminSendCertificatePayload;
@@ -75,7 +76,7 @@ const handleSendCertificate: Middleware = async (ctx) => {
     html: certificate.activity.email,
     attachments: [
       {
-        filename: `${userName}-${certName}.pdf`,
+        filename: sanitize(`${userName}-${certName}.pdf`),
         content: data,
       },
     ],

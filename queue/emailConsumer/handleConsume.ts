@@ -4,6 +4,7 @@ import { drawName } from '@controllers/admin/certificate/generator';
 import sendCertificate from '@utils/email/sender';
 import { MQSendCertficatePayload } from 'types';
 import format from 'date-fns/format';
+import sanitize from 'sanitize-filename';
 
 const handleConsume = async (msg: ConsumeMessage | null) => {
   const now = format(new Date(), 'yyyy-MM-dd HH:mm:ss');
@@ -47,7 +48,7 @@ const handleConsume = async (msg: ConsumeMessage | null) => {
       html,
       attachments: [
         {
-          filename: `${userName}-${certName}.pdf`,
+          filename: sanitize(`${userName}-${certName}.pdf`),
           content: data,
         },
       ],
