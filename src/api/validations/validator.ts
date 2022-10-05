@@ -3,10 +3,10 @@ import { Middleware } from '@koa/router';
 
 const validate =
   <T>(schema: SchemaOf<T>, returnMessage?: (errors: ValidationError) => object): Middleware =>
-  async (ctx, next) => {
+  (ctx, next) => {
     try {
-      await schema.validate(ctx.request.body);
-      return await next();
+      schema.validateSync(ctx.request.body);
+      return next();
     } catch (err) {
       const errors = err as ValidationError;
 
