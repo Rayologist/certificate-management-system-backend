@@ -6,12 +6,14 @@ type Payload = {
   title: string;
   startDate: Date;
   endDate: Date;
+  email: string;
+  subject: string;
 };
 
 const handleUpdateActivity: Middleware = async (ctx) => {
   // TODO: Fix the update problem when the value in where clause does not exist
 
-  const { auid, title, startDate, endDate } = ctx.request.body as Payload;
+  const { auid, title, startDate, endDate, email, subject } = ctx.request.body as Payload;
 
   await prisma.activity.update({
     where: {
@@ -21,6 +23,8 @@ const handleUpdateActivity: Middleware = async (ctx) => {
       title,
       startDate,
       endDate,
+      email,
+      subject,
     },
   });
 
