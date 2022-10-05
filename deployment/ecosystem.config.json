@@ -1,6 +1,7 @@
 {
   "apps": [
     {
+      "interpreter": "/bin/bash",
       "script": "pnpm",
       "args": "start:queue:pm2",
       "cwd": "/home/rayologist/certificate-management-system-backend/",
@@ -11,6 +12,7 @@
       "max_memory_restart": "2G"
     },
     {
+      "interpreter": "/bin/bash",
       "script": "pnpm",
       "args": "start:pm2",
       "cwd": "/home/rayologist/certificate-management-system-backend/",
@@ -22,6 +24,7 @@
       "max_memory_restart": "2G"
     },
     {
+      "interpreter": "/bin/bash",
       "script": "pnpm",
       "args": "start:pm2",
       "cwd": "/home/rayologist/certificate-management-system-backend/",
@@ -33,6 +36,7 @@
       "max_memory_restart": "2G"
     },
     {
+      "interpreter": "/bin/bash",
       "script": "pnpm",
       "args": "start:pm2",
       "cwd": "/home/rayologist/certificate-management-system-backend/",
@@ -44,6 +48,7 @@
       "max_memory_restart": "2G"
     },
     {
+      "interpreter": "/bin/bash",
       "script": "pnpm",
       "args": "start -- -p 6776",
       "cwd": "/home/rayologist/certificate-management-system-frontend/",
@@ -54,6 +59,7 @@
       "max_memory_restart": "2G"
     },
     {
+      "interpreter": "/bin/bash",
       "script": "pnpm",
       "args": "start -- -p 9339",
       "cwd": "/home/rayologist/certificate-management-system-frontend/",
