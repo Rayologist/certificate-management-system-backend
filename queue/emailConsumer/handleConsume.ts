@@ -12,13 +12,13 @@ const handleConsume = async (msg: ConsumeMessage | null) => {
 
     if (content === '{}') return null;
 
-    const { filename, displayName, participantName, email }: MQSendCertficatePayload =
+    const { filename, displayName, participantName, to, html, subject }: MQSendCertficatePayload =
       JSON.parse(content);
 
     // eslint-disable-next-line no-console
-    console.log(now, `certificate="${displayName}" email="${email}"`);
+    console.log(now, `certificate="${displayName}" email="${to}"`);
 
-    if (!filename || !displayName || !participantName || !email) return null;
+    if (!filename || !displayName || !participantName || !to || !html || !subject) return null;
 
     const { canvas, image } = await drawName(filename, participantName);
 
@@ -41,13 +41,17 @@ const handleConsume = async (msg: ConsumeMessage | null) => {
 
     const userName = participantName.replace(/\s/g, '_');
     const certName = displayName.replace(/\s/g, '_');
-
-    await sendCertificate(email, [
-      {
-        filename: `${userName}-${certName}.pdf`,
-        content: data,
-      },
-    ]);
+    await sendCertificate({
+      to,
+      subject,
+      html,
+      attachments: [
+        {
+          filename: `${userName}-${certName}.pdf`,
+          content: data,
+        },
+      ],
+    });
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error(now, error);

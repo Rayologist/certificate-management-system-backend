@@ -7,7 +7,9 @@ async function publishCertificateEmail({
   filename,
   displayName,
   participantName,
-  email,
+  html,
+  subject,
+  to,
 }: MQSendCertficatePayload) {
   try {
     const queue = 'email';
@@ -23,7 +25,9 @@ async function publishCertificateEmail({
           filename,
           displayName,
           participantName,
-          email,
+          to,
+          html,
+          subject,
         }),
       ),
     );
@@ -45,7 +49,12 @@ const handleSendCertificate: Middleware = async (ctx) => {
   const [certificate, user] = await prisma.$transaction([
     prisma.certificate.findUnique({
       where: { id: certificateId },
-      select: { filename: true, available: true, displayName: true },
+      select: {
+        filename: true,
+        available: true,
+        displayName: true,
+        activity: { select: { email: true, subject: true } },
+      },
     }),
     prisma.participant.findMany({
       select: {
@@ -92,7 +101,9 @@ const handleSendCertificate: Middleware = async (ctx) => {
     filename: certificate.filename,
     displayName: certificate.displayName,
     participantName,
-    email: user[0].email,
+    to: user[0].email,
+    html: certificate.activity.email,
+    subject: certificate.activity.subject,
   });
 
   if (publishResult === false) {

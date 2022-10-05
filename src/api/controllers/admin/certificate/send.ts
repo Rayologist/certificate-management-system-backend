@@ -16,6 +16,7 @@ const handleSendCertificate: Middleware = async (ctx) => {
         filename: true,
         available: true,
         displayName: true,
+        activity: { select: { email: true, subject: true } },
       },
     }),
     prisma.participant.findUnique({
@@ -68,12 +69,17 @@ const handleSendCertificate: Middleware = async (ctx) => {
 
   const userName = nameOnCert.replace(/\s/g, '_');
   const certName = certificate.displayName.replace(/\s/g, '_');
-  await sendCertificate(user.email, [
-    {
-      filename: `${userName}-${certName}.pdf`,
-      content: data,
-    },
-  ]);
+  await sendCertificate({
+    to: user.email,
+    subject: certificate.activity.subject,
+    html: certificate.activity.email,
+    attachments: [
+      {
+        filename: `${userName}-${certName}.pdf`,
+        content: data,
+      },
+    ],
+  });
 
   const cids = user.participantCertificate.map((value) => value.cid);
 
