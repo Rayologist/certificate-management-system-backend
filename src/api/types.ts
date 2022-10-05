@@ -55,5 +55,7 @@ export type MQSendCertficatePayload = {
   filename: string;
   displayName: string;
   participantName: string;
-  email: string;
+  to: string;
+  subject: string;
+  html: string;
 };
