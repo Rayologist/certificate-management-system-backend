@@ -19,4 +19,4 @@ RUN pnpm i
 
 COPY . /app
 
-RUN npx prisma generate
+RUN pnpm prisma generate
