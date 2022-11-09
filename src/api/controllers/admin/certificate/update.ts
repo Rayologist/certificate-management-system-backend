@@ -9,13 +9,14 @@ import { cleanTitle } from '@utils/index';
 import { drawCertificate } from './generator';
 
 const handleUpateCertificate: Middleware = async (ctx) => {
-  const { id, title, totalHour, dateString } = ctx.request.body as Payload;
+  const { id, displayName, title, totalHour, dateString } = ctx.request.body as Payload;
 
   const cleanedTitle = cleanTitle(title);
 
   const data = await prisma.certificate.update({
     where: { id },
     data: {
+      displayName,
       title: cleanedTitle,
       totalHour,
       dateString,
