@@ -16,6 +16,10 @@ const TEMPLATE_PATH = path.resolve(ROOT_FOLDER, 'template.png');
 const ADMIN_COOKIE_NAME = '_s_a';
 const CERT_COOKIE_NAME = '_c';
 
+const Email = {
+  from: '國立臺灣大學雙語教育中心 <ntucbe@ntu.edu.tw>',
+} as const;
+
 export {
   corsConfig,
   CERTIFICATE_ROOT,
@@ -24,4 +28,5 @@ export {
   FONT_ROOT,
   ADMIN_COOKIE_NAME,
   CERT_COOKIE_NAME,
+  Email,
 };
