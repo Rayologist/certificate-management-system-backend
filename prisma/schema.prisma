@@ -31,9 +31,9 @@ model Certificate {
   id          Int      @id @default(autoincrement())
   activityUid String   @map("activity_uid") @db.Uuid
   displayName String
-  title       Json
-  totalHour   Int      @map("total_hour")
-  dateString  String   @map("date_string")
+  content     Json
+  totalHour   Int?     @map("total_hour")
+  dateString  String?  @map("date_string")
   filename    String
   url         String
   available   Boolean  @default(true)
