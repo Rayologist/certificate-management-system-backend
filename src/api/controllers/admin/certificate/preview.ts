@@ -1,6 +1,6 @@
 import { Middleware } from 'koa';
 import { CreateCertificatePayload } from 'types';
-import { cleanTitle } from '@utils/index';
+import { cleanContent } from '@utils/index';
 import { drawCertificate, calculateStartPixel } from './generator';
 import Y from './generator/constant';
 
@@ -9,13 +9,9 @@ type Payload = Omit<CreateCertificatePayload, 'displayName' | 'activityUid'> & {
 };
 
 const handleCertificatePreview: Middleware = async (ctx) => {
-  const { title, totalHour, dateString, dummyName } = ctx.request.body as Payload;
+  const { content, dummyName } = ctx.request.body as Payload;
 
-  const { image, canvas, context } = await drawCertificate(
-    cleanTitle(title),
-    totalHour,
-    dateString,
-  );
+  const { image, canvas, context } = await drawCertificate(cleanContent(content));
 
   if (dummyName) {
     context.font = '100px "Songti"';

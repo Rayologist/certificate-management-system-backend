@@ -1,25 +1,23 @@
 import { Middleware } from '@koa/router';
 import { CreateCertificatePayload as Payload } from 'types';
 import { prisma } from '@models';
-import { cleanTitle } from '@utils/index';
+import { cleanContent } from '@utils/index';
 import generateCertificate from './generator';
 
 const handleCreateCertificate: Middleware = async (ctx) => {
-  const { displayName, title, activityUid, totalHour, dateString } = ctx.request.body as Payload;
+  const { displayName, content, activityUid } = ctx.request.body as Payload;
 
-  const cleanedTitle = cleanTitle(title);
+  const cleanedContent = cleanContent(content);
 
-  const { url, filename } = await generateCertificate(cleanedTitle, totalHour, dateString);
+  const { url, filename } = await generateCertificate(cleanedContent);
 
   await prisma.certificate.create({
     data: {
       activityUid,
       displayName,
-      title: cleanedTitle,
+      content: cleanedContent,
       filename,
       url,
-      totalHour,
-      dateString,
     },
   });
 

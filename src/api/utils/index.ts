@@ -9,7 +9,7 @@ const parseCookie = <T>(text: string): T | false => {
   }
 };
 
-const cleanTitle = (input: Text[]) =>
+const cleanContent = (input: Text[]) =>
   input.map((value) => {
     const text = value.text.trim();
     return { ...value, text };
@@ -21,4 +21,4 @@ const isUUID = (text: string) => {
   return regex.test(text);
 };
 
-export { mailer, parseCookie, cleanTitle, isUUID };
+export { mailer, parseCookie, cleanContent, isUUID };

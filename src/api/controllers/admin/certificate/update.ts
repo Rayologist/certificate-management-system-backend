@@ -5,29 +5,27 @@ import { CERTIFICATE_ROOT } from '@config';
 import path from 'path';
 import fs from 'fs';
 import { pipeline } from 'stream/promises';
-import { cleanTitle } from '@utils/index';
+import { cleanContent } from '@utils/index';
 import { drawCertificate } from './generator';
 
 const handleUpateCertificate: Middleware = async (ctx) => {
-  const { id, displayName, title, totalHour, dateString } = ctx.request.body as Payload;
+  const { id, displayName, content } = ctx.request.body as Payload;
 
-  const cleanedTitle = cleanTitle(title);
+  const cleanedContent = cleanContent(content);
 
   const data = await prisma.certificate.update({
     where: { id },
     data: {
       displayName,
-      title: cleanedTitle,
-      totalHour,
-      dateString,
+      content: cleanedContent,
     },
   });
 
   /* eslint-disable @typescript-eslint/no-shadow */
   {
-    const { filename, title: certTitle, totalHour, dateString } = data;
+    const { filename, content: certTitle } = data;
     const title = certTitle as Text[];
-    const { canvas } = await drawCertificate(title, totalHour, dateString);
+    const { canvas } = await drawCertificate(title);
     const filePath = path.resolve(CERTIFICATE_ROOT, filename);
 
     // continuous awaits slow down server request

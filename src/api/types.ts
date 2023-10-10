@@ -6,17 +6,13 @@ export type Text = {
 export type CreateCertificatePayload = {
   activityUid: string;
   displayName: string;
-  title: Text[];
-  totalHour: number;
-  dateString: string;
+  content: Text[];
 };
 
 export type UpdateCertificatePayload = {
   id: number;
   displayName: string;
-  title: Text[];
-  totalHour: number;
-  dateString: string;
+  content: Text[];
 };
 
 export type CreateParticipantPayload = {

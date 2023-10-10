@@ -3,7 +3,7 @@ import validate from '../../validator';
 
 const schema = object({
   id: number().required(),
-  title: array()
+  content: array()
     .of(
       object({
         text: string().required(),
@@ -11,10 +11,7 @@ const schema = object({
       }),
     )
     .required()
-    .min(1)
-    .max(3),
-  totalHour: number().required(),
-  dateString: string().min(1).required(),
+    .min(1),
 });
 
 const validateUpdateCertificate = validate(schema);

@@ -34,11 +34,7 @@ export async function drawName(imageName: string, name: string) {
   return { canvas, ctx, image };
 }
 
-export async function drawCertificate(
-  texts: Text[],
-  hours: number,
-  date: string,
-): Promise<{
+export async function drawCertificate(texts: Text[]): Promise<{
   image: Image;
   canvas: Canvas;
   context: CanvasRenderingContext2D;
@@ -55,21 +51,8 @@ export async function drawCertificate(
   ctx.font = font;
 
   const extraHeight = texts.length === 3 ? 0 : 30;
-  // event titles
-  const CertTexts = [
-    {
-      text: 'has attended the',
-    },
-    ...texts,
-    {
-      text: `With a total of ${hours} hour(s)`,
-    },
-    {
-      text: `on ${date}`,
-    },
-  ];
 
-  CertTexts.forEach((text, index) => {
+  texts.forEach((text, index) => {
     const startHeight = Y.titleUpper + fontSize + (lineHeight + extraHeight) * index;
 
     if (text?.weight || text?.weight !== '') {
@@ -88,12 +71,12 @@ export async function drawCertificate(
   return { image, canvas, context: ctx };
 }
 
-export default async function generateCertificate(texts: Text[], hours: number, date: string) {
-  const { canvas } = await drawCertificate(texts, hours, date);
+export default async function generateCertificate(texts: Text[]) {
+  const { canvas } = await drawCertificate(texts);
 
   // generate file name
   const hash = createHash('md5');
-  hash.update(JSON.stringify({ texts, hours, date, now: new Date() }));
+  hash.update(JSON.stringify({ texts, now: new Date() }));
   const digest = hash.digest('hex');
 
   const filename = `${digest}.png`;
