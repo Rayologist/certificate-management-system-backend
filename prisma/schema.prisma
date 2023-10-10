@@ -10,6 +10,21 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Template {
+  id               Int    @id @default(autoincrement())
+  filename         String
+  namePositionY    Int    @map("name_position_y")
+  titleUpperLimitY Int    @map("title_upper_limit_y")
+  titleLowerLimitY Int    @map("title_lower_limit_y")
+
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime? @updatedAt @map("updated_at")
+
+  certificate Certificate[]
+
+  @@map("templates")
+}
+
 model Activity {
   auid      String   @id @default(uuid()) @db.Uuid
   title     String
@@ -29,6 +44,7 @@ model Activity {
 
 model Certificate {
   id          Int      @id @default(autoincrement())
+  templateId  Int      @map("template_id")
   activityUid String   @map("activity_uid") @db.Uuid
   displayName String
   content     Json
@@ -42,6 +58,7 @@ model Certificate {
 
   activity               Activity                 @relation(fields: [activityUid], references: [auid], onUpdate: NoAction)
   participantCertificate ParticipantCertificate[]
+  template               Template                 @relation(fields: [templateId], references: [id], onUpdate: Cascade)
 
   @@map("certificates")
 }
