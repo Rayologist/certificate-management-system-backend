@@ -19,13 +19,27 @@ const handleUpateCertificate: Middleware = async (ctx) => {
       displayName,
       content: cleanedContent,
     },
+    select: {
+      filename: true,
+      content: true,
+      template: true,
+    },
   });
 
   /* eslint-disable @typescript-eslint/no-shadow */
   {
-    const { filename, content: certTitle } = data;
-    const title = certTitle as Text[];
-    const { canvas } = await drawCertificate(title);
+    const { filename, content: certTitle, template } = data;
+    const texts = certTitle as Text[];
+    const { canvas } = await drawCertificate({
+      texts,
+      config: {
+        templateFilename: template.filename,
+        namePositionY: template.namePositionY,
+        titleLowerLimitY: template.titleLowerLimitY,
+        titleUpperLimitY: template.titleUpperLimitY,
+      },
+    });
+
     const filePath = path.resolve(CERTIFICATE_ROOT, filename);
 
     // continuous awaits slow down server request

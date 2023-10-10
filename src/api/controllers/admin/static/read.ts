@@ -1,5 +1,5 @@
 import { Middleware } from '@koa/router';
-import { CERTIFICATE_ROOT } from '@config';
+import { CERTIFICATE_ROOT, TEMPLATE_ID, TEMPLATE_PATH } from '@config';
 import send from 'koa-send';
 import path from 'path';
 import { prisma } from '@models';
@@ -11,10 +11,18 @@ const handleGetStaticCertificate: Middleware = async (ctx) => {
   const [url] = params.split('=');
 
   if (url === 'template') {
+    const templateId = TEMPLATE_ID;
+    const template = await prisma.template.findUnique({
+      where: { id: templateId },
+    });
+
+    if (!template) {
+      throw new Error('Template not found');
+    }
     ctx.set('Content-Disposition', `filename*=utf-8''${encodeURIComponent(template.filename)}`);
 
-    await send(ctx, filename, {
-      root: path.resolve(CERTIFICATE_ROOT, '..'),
+    await send(ctx, template.filename, {
+      root: path.resolve(TEMPLATE_PATH),
       setHeaders: (res) => {
         res.setHeader('Cache-Control', 'private, max-age=0');
       },

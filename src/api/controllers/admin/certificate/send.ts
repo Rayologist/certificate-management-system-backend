@@ -1,4 +1,4 @@
-import { drawName } from '@controllers/admin/certificate/generator';
+import { drawUsername } from '@controllers/admin/certificate/generator';
 import PDFDocument from 'pdfkit';
 import { Middleware } from '@koa/router';
 import { AdminSendCertificatePayload } from 'types';
@@ -14,6 +14,7 @@ const handleSendCertificate: Middleware = async (ctx) => {
     prisma.certificate.findUnique({
       where: { id: certificateId },
       select: {
+        template: { select: { namePositionY: true } },
         filename: true,
         available: true,
         displayName: true,
@@ -49,7 +50,13 @@ const handleSendCertificate: Middleware = async (ctx) => {
 
   const nameOnCert = alternativeName === '' ? user.name : alternativeName;
 
-  const { canvas, image } = await drawName(certificate.filename, nameOnCert);
+  const { canvas, image } = await drawUsername({
+    username: nameOnCert,
+    config: {
+      imageFilename: certificate.filename,
+      namePositionY: certificate.template.namePositionY,
+    },
+  });
 
   const data = await new Promise<Buffer>((resolve) => {
     const doc = new PDFDocument({
