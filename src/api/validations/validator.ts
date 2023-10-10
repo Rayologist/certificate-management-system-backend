@@ -1,8 +1,8 @@
-import { SchemaOf, ValidationError } from 'yup';
+import { Schema, ValidationError } from 'yup';
 import { Middleware } from '@koa/router';
 
 const validate =
-  <T>(schema: SchemaOf<T>, returnMessage?: (errors: ValidationError) => object): Middleware =>
+  <T>(schema: Schema<T>, returnMessage?: (errors: ValidationError) => object): Middleware =>
   (ctx, next) => {
     try {
       schema.validateSync(ctx.request.body);
