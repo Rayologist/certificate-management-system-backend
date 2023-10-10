@@ -11,8 +11,7 @@ const handleGetStaticCertificate: Middleware = async (ctx) => {
   const [url] = params.split('=');
 
   if (url === 'template') {
-    const filename = 'template.png';
-    ctx.set('Content-Disposition', `filename=${filename}`);
+    ctx.set('Content-Disposition', `filename*=utf-8''${encodeURIComponent(template.filename)}`);
 
     await send(ctx, filename, {
       root: path.resolve(CERTIFICATE_ROOT, '..'),
@@ -44,7 +43,7 @@ const handleGetStaticCertificate: Middleware = async (ctx) => {
 
     const { filename, displayName } = cert[0];
 
-    ctx.set('Content-Disposition', `filename=${displayName}`);
+    ctx.set('Content-Disposition', `filename*=utf-8''${encodeURIComponent(displayName)}`);
 
     await send(ctx, filename, {
       root: CERTIFICATE_ROOT,
