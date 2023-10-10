@@ -12,7 +12,7 @@ const PREFIX = process.env.NODE_ENV === 'production' ? '/api' : '/';
 const ROOT_FOLDER = path.resolve(ROOT, 'certs');
 const CERTIFICATE_ROOT = path.resolve(ROOT_FOLDER, 'static');
 const FONT_ROOT = path.resolve(ROOT_FOLDER, 'fonts');
-const TEMPLATE_PATH = path.resolve(ROOT_FOLDER, 'template.png');
+const TEMPLATE_PATH = path.resolve(ROOT_FOLDER, 'templates');
 const ADMIN_COOKIE_NAME = '_s_a';
 const CERT_COOKIE_NAME = '_c';
 
