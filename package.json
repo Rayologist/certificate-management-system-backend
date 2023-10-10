@@ -6,7 +6,7 @@
   "private": true,
   "scripts": {
     "dev": "nodemon src/index.ts",
-    "dev:queue": "nodemon queue/index.ts",
+    "dev:queue": "nodemon --ignore src queue/index.ts",
     "start": "PORT=3001 NODE_ENV=production node -r dotenv/config dist/src/index.js",
     "start:queue": "NODE_ENV=production node -r dotenv/config dist/queue/index.js",
     "start:pm2": "node -r dotenv/config dist/src/index.js",
