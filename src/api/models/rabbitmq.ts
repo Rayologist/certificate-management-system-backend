@@ -2,7 +2,7 @@ import { connect as _connect, Connection } from 'amqplib';
 
 const { RABBITMQ_URL } = process.env;
 
-async function connect() {
+export async function connect() {
   if (!RABBITMQ_URL) {
     throw new Error('Cannot find RABBITMQ_URL');
   }
@@ -26,6 +26,4 @@ class ConnectionManager {
   }
 }
 
-const connectionManager = new ConnectionManager();
-
-export default connectionManager;
+export const connectionManager = new ConnectionManager();
