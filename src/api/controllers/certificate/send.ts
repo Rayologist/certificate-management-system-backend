@@ -4,12 +4,9 @@ import { prisma, connectionManager } from '@models';
 import format from 'date-fns/format';
 
 async function publishCertificateEmail({
-  filename,
-  displayName,
+  userEmail,
   participantName,
-  html,
-  subject,
-  to,
+  certificateId,
 }: MQSendCertficatePayload) {
   try {
     const queue = 'email';
@@ -21,18 +18,14 @@ async function publishCertificateEmail({
       queue,
       Buffer.from(
         JSON.stringify({
-          filename,
-          displayName,
+          userEmail,
+          certificateId,
           participantName,
-          to,
-          html,
-          subject,
         }),
       ),
     );
 
     await channel.close();
-    await conn.close();
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error(format(new Date(), 'yyyy-MM-dd HH:mm:ss'), error);
@@ -48,12 +41,7 @@ const handleSendCertificate: Middleware = async (ctx) => {
   const [certificate, user] = await prisma.$transaction([
     prisma.certificate.findUnique({
       where: { id: certificateId },
-      select: {
-        filename: true,
-        available: true,
-        displayName: true,
-        activity: { select: { email: true, subject: true } },
-      },
+      select: { id: true },
     }),
     prisma.participant.findMany({
       select: {
@@ -75,13 +63,6 @@ const handleSendCertificate: Middleware = async (ctx) => {
     return null;
   }
 
-  if (!certificate.available) {
-    ctx.status = 503;
-    ctx.set('Retry-After', '5');
-    ctx.body = { status: 'failed', msg: 'unavaliable' };
-    return null;
-  }
-
   if (user[0].participantCertificate.length) {
     ctx.certs.push(certificateId);
     const certs = JSON.stringify(ctx.certs);
@@ -97,12 +78,9 @@ const handleSendCertificate: Middleware = async (ctx) => {
   const participantName = altName.trim() === '' ? name : altName;
 
   const publishResult = await publishCertificateEmail({
-    filename: certificate.filename,
-    displayName: certificate.displayName,
+    userEmail: user[0].email,
     participantName,
-    to: user[0].email,
-    html: certificate.activity.email,
-    subject: certificate.activity.subject,
+    certificateId,
   });
 
   if (publishResult === false) {

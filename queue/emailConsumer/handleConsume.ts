@@ -1,10 +1,11 @@
 import { ConsumeMessage } from 'amqplib';
 import PDFDocument from 'pdfkit';
-import { drawName } from '@controllers/admin/certificate/generator';
+import { drawUsername } from '@controllers/admin/certificate/generator';
 import sendCertificate from '@utils/email/sender';
 import { MQSendCertficatePayload } from 'types';
 import format from 'date-fns/format';
 import sanitize from 'sanitize-filename';
+import { prisma } from '@models';
 
 const handleConsume = async (msg: ConsumeMessage | null) => {
   const now = format(new Date(), 'yyyy-MM-dd HH:mm:ss');
@@ -13,15 +14,34 @@ const handleConsume = async (msg: ConsumeMessage | null) => {
 
     if (content === '{}') return null;
 
-    const { filename, displayName, participantName, to, html, subject }: MQSendCertficatePayload =
+    const { participantName, userEmail, certificateId }: MQSendCertficatePayload =
       JSON.parse(content);
+    const certificate = await prisma.certificate.findUnique({
+      where: { id: certificateId },
+      select: {
+        template: { select: { namePositionY: true } },
+        filename: true,
+        available: true,
+        displayName: true,
+        activity: { select: { email: true, subject: true } },
+      },
+    });
 
     // eslint-disable-next-line no-console
-    console.log(now, `certificate="${displayName}" email="${to}"`);
+    console.log(
+      now,
+      `certificateId="${certificateId}", displayName=${certificate?.displayName} email="${userEmail}"`,
+    );
 
-    if (!filename || !displayName || !participantName || !to || !html || !subject) return null;
+    if (!participantName || !userEmail || !certificate) return null;
 
-    const { canvas, image } = await drawName(filename, participantName);
+    const { canvas, image } = await drawUsername({
+      username: participantName,
+      config: {
+        namePositionY: certificate.template.namePositionY,
+        imageFilename: certificate.filename,
+      },
+    });
 
     const data = await new Promise<Buffer>((resolve) => {
       const doc = new PDFDocument({
@@ -41,11 +61,12 @@ const handleConsume = async (msg: ConsumeMessage | null) => {
     });
 
     const userName = participantName.replace(/\s/g, '_');
-    const certName = displayName.replace(/\s/g, '_');
+    const certName = certificate.displayName.replace(/\s/g, '_');
+
     await sendCertificate({
-      to,
-      subject,
-      html,
+      to: userEmail,
+      subject: certificate.activity.subject,
+      html: certificate.activity.email,
       attachments: [
         {
           filename: sanitize(`${userName}-${certName}.pdf`),
