@@ -1,4 +1,4 @@
-import { connect as _connect } from 'amqplib';
+import { connect as _connect, Connection } from 'amqplib';
 
 const { RABBITMQ_URL } = process.env;
 
@@ -9,4 +9,23 @@ async function connect() {
   return _connect(RABBITMQ_URL);
 }
 
-export default connect;
+class ConnectionManager {
+  private connection: Connection | null = null;
+
+  async connect() {
+    if (this.connection) return this.connection;
+
+    this.connection = await connect();
+    return this.connection;
+  }
+
+  async getChannel() {
+    const conn = await this.connect();
+    const channel = await conn.createChannel();
+    return channel;
+  }
+}
+
+const connectionManager = new ConnectionManager();
+
+export default connectionManager;

@@ -1,6 +1,6 @@
 import { Middleware } from '@koa/router';
 import { SendCertificatePayload, MQSendCertficatePayload } from 'types';
-import { prisma, connect } from '@models';
+import { prisma, connectionManager } from '@models';
 import format from 'date-fns/format';
 
 async function publishCertificateEmail({
@@ -13,8 +13,7 @@ async function publishCertificateEmail({
 }: MQSendCertficatePayload) {
   try {
     const queue = 'email';
-    const conn = await connect();
-    const channel = await conn.createChannel();
+    const channel = await connectionManager.getChannel();
 
     await channel.assertQueue(queue);
 

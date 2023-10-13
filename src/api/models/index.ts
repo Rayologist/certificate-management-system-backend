@@ -1,4 +1,4 @@
 import prisma from './prisma';
-import connect from './rabbitmq';
+import connectionManager from './rabbitmq';
 
-export { prisma, connect }; // eslint-disable-line import/prefer-default-export
+export { prisma, connectionManager }; // eslint-disable-line import/prefer-default-export
