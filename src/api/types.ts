@@ -4,6 +4,7 @@ export type Text = {
 };
 
 export type CreateCertificatePayload = {
+  templateId: number;
   activityUid: string;
   displayName: string;
   content: Text[];

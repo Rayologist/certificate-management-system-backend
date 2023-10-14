@@ -2,7 +2,6 @@ import { Middleware } from 'koa';
 import { CreateCertificatePayload } from 'types';
 import { cleanContent } from '@utils/index';
 import { prisma } from '@models';
-import { TEMPLATE_ID } from '@config';
 import { drawCertificate, calculateStartPixel } from './generator';
 
 type Payload = Omit<CreateCertificatePayload, 'displayName' | 'activityUid'> & {
@@ -10,10 +9,8 @@ type Payload = Omit<CreateCertificatePayload, 'displayName' | 'activityUid'> & {
 };
 
 const handleCertificatePreview: Middleware = async (ctx) => {
-  const { content, dummyName } = ctx.request.body as Payload;
+  const { content, dummyName, templateId } = ctx.request.body as Payload;
 
-  // TODO: frontend should provide templateId
-  const templateId = TEMPLATE_ID;
   const template = await prisma.template.findUnique({
     where: { id: templateId },
   });
