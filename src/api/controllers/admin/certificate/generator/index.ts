@@ -13,6 +13,9 @@ import { pipeline } from 'stream/promises';
 import { TEMPLATE_PATH, FONT_ROOT, CERTIFICATE_ROOT } from '@config';
 import { Text } from 'types';
 
+registerFont(`${FONT_ROOT}/Lantinghei-Demibold.ttf`, { family: 'Lantinghei' });
+registerFont(`${FONT_ROOT}/HelveticaNeue-Bold.ttf`, { family: 'Helvetica Neue' });
+
 export async function createCertGraph(...paths: string[]): Promise<CertGraph> {
   const image = await loadImage(path.resolve(...paths));
   const canvas = createCanvas(image.naturalWidth, image.naturalHeight);
@@ -33,6 +36,8 @@ export function drawUsername(args: {
   const { username, config, certGraph } = args;
   const { ctx, image, canvas } = certGraph;
 
+  ctx.font = '120px "Helvetica Neue"';
+  ctx.fillStyle = '#30788A';
   ctx.fillText(
     username,
     calculateStartPixel(image.naturalWidth, ctx.measureText(username).width),
@@ -45,12 +50,12 @@ export async function drawCertificate(args: DrawCertificateArgs): Promise<CertGr
   const { texts, config } = args;
   const { ctx, image, canvas } = await createCertGraph(TEMPLATE_PATH, config.templateFilename);
 
-  const fontSize = 65;
-  const lineHeight = 120;
+  const fontSize = 62;
+  const lineHeight = 100;
   const font = `${fontSize}px "Times New Roman"`;
   ctx.font = font;
 
-  const extraLineHeight = 30;
+  const extraLineHeight = 25;
 
   texts.forEach((text, index) => {
     const startHeight = config.titleUpperLimitY + fontSize + (lineHeight + extraLineHeight) * index;
