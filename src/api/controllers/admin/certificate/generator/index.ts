@@ -13,25 +13,25 @@ import { pipeline } from 'stream/promises';
 import { TEMPLATE_PATH, FONT_ROOT, CERTIFICATE_ROOT } from '@config';
 import { Text } from 'types';
 
-registerFont(`${FONT_ROOT}/Songti.ttf`, { family: 'Songti' });
+export async function createCertGraph(...paths: string[]): Promise<CertGraph> {
+  const image = await loadImage(path.resolve(...paths));
+  const canvas = createCanvas(image.naturalWidth, image.naturalHeight);
+  const ctx = canvas.getContext('2d');
+  ctx.drawImage(image, 0, 0, image.naturalWidth, image.naturalHeight);
+  return { canvas, ctx, image };
+}
 
 export function calculateStartPixel(imageWidthOrHeight: number, sentencePixel: number) {
   return (imageWidthOrHeight - sentencePixel) / 2;
 }
 
-export async function drawUsername(args: {
+export function drawUsername(args: {
   username: string;
-  config: { namePositionY: number; imageFilename: string };
+  config: { namePositionY: number };
+  certGraph: CertGraph;
 }) {
-  const { username, config } = args;
-  const imagePath = path.join(CERTIFICATE_ROOT, config.imageFilename);
-  const image = await loadImage(imagePath);
-  const canvas = createCanvas(image.naturalWidth, image.naturalHeight);
-  const ctx = canvas.getContext('2d');
-
-  ctx.drawImage(image, 0, 0, image.naturalWidth, image.naturalHeight);
-
-  ctx.font = '100px "Songti"';
+  const { username, config, certGraph } = args;
+  const { ctx, image, canvas } = certGraph;
 
   ctx.fillText(
     username,
@@ -41,17 +41,9 @@ export async function drawUsername(args: {
   return { canvas, ctx, image };
 }
 
-export async function drawCertificate(args: DrawCertificateArgs): Promise<{
-  image: Image;
-  canvas: Canvas;
-  context: CanvasRenderingContext2D;
-}> {
+export async function drawCertificate(args: DrawCertificateArgs): Promise<CertGraph> {
   const { texts, config } = args;
-  const image = await loadImage(path.resolve(TEMPLATE_PATH, config.templateFilename));
-  const canvas = createCanvas(image.naturalWidth, image.naturalHeight);
-  const ctx = canvas.getContext('2d');
-
-  ctx.drawImage(image, 0, 0, image.naturalWidth, image.naturalHeight);
+  const { ctx, image, canvas } = await createCertGraph(TEMPLATE_PATH, config.templateFilename);
 
   const fontSize = 65;
   const lineHeight = 120;
@@ -76,7 +68,7 @@ export async function drawCertificate(args: DrawCertificateArgs): Promise<{
     );
   });
 
-  return { image, canvas, context: ctx };
+  return { image, canvas, ctx };
 }
 
 export default async function generateCertificate(args: DrawCertificateArgs) {
@@ -103,4 +95,10 @@ export type DrawCertificateArgs = {
     titleUpperLimitY: number;
     titleLowerLimitY: number;
   };
+};
+
+export type CertGraph = {
+  canvas: Canvas;
+  ctx: CanvasRenderingContext2D;
+  image: Image;
 };

@@ -1,10 +1,11 @@
-import { drawUsername } from '@controllers/admin/certificate/generator';
+import { createCertGraph, drawUsername } from '@controllers/admin/certificate/generator';
 import PDFDocument from 'pdfkit';
 import { Middleware } from '@koa/router';
 import { AdminSendCertificatePayload } from 'types';
 import { prisma } from '@models';
 import sendCertificate from '@utils/email/sender';
 import sanitize from 'sanitize-filename';
+import { CERTIFICATE_ROOT } from '@config';
 
 const handleSendCertificate: Middleware = async (ctx) => {
   const { participantId, certificateId, altName } = ctx.request.body as AdminSendCertificatePayload;
@@ -50,12 +51,13 @@ const handleSendCertificate: Middleware = async (ctx) => {
 
   const nameOnCert = alternativeName === '' ? user.name : alternativeName;
 
-  const { canvas, image } = await drawUsername({
+  const certGraph = await createCertGraph(CERTIFICATE_ROOT, certificate.filename);
+  const { canvas, image } = drawUsername({
     username: nameOnCert,
     config: {
-      imageFilename: certificate.filename,
       namePositionY: certificate.template.namePositionY,
     },
+    certGraph,
   });
 
   const data = await new Promise<Buffer>((resolve) => {
