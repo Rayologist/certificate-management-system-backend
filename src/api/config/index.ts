@@ -15,7 +15,7 @@ const FONT_ROOT = path.resolve(ROOT_FOLDER, 'fonts');
 const TEMPLATE_PATH = path.resolve(ROOT_FOLDER, 'templates');
 const ADMIN_COOKIE_NAME = '_s_a';
 const CERT_COOKIE_NAME = '_c';
-const TEMPLATE_ID = 1;
+const TEMPLATE_ID = 2;
 
 const Email = {
   from: '國立臺灣大學雙語教育中心 <ntucbe@ntu.edu.tw>',
