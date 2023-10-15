@@ -13,8 +13,7 @@ import { pipeline } from 'stream/promises';
 import { FONT_ROOT, CERTIFICATE_ROOT } from '@config';
 import { Text } from 'types';
 
-registerFont(`${FONT_ROOT}/Lantinghei-Demibold.ttf`, { family: 'Lantinghei' });
-registerFont(`${FONT_ROOT}/HelveticaNeue-Bold.ttf`, { family: 'Helvetica Neue' });
+registerFont(`${FONT_ROOT}/NotoSansTC-Bold.ttf`, { family: 'Noto' });
 
 export async function createCertGraph(...paths: string[]): Promise<CertGraph> {
   const image = await loadImage(path.resolve(...paths));
