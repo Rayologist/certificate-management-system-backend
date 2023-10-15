@@ -1,4 +1,4 @@
-import { createCertGraph, drawUsername } from '@controllers/admin/certificate/generator';
+import { createCertGraph, renderName } from '@controllers/admin/certificate/generator';
 import PDFDocument from 'pdfkit';
 import { Middleware } from '@koa/router';
 import { AdminSendCertificatePayload } from 'types';
@@ -52,7 +52,7 @@ const handleSendCertificate: Middleware = async (ctx) => {
   const nameOnCert = alternativeName === '' ? user.name : alternativeName;
 
   const certGraph = await createCertGraph(CERTIFICATE_ROOT, certificate.filename);
-  const { canvas, image } = drawUsername({
+  const { canvas, image } = renderName({
     username: nameOnCert,
     config: {
       namePositionY: certificate.template.namePositionY,

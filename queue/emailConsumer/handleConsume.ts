@@ -1,11 +1,12 @@
 import { ConsumeMessage } from 'amqplib';
 import PDFDocument from 'pdfkit';
-import { drawUsername } from '@controllers/admin/certificate/generator';
+import { createCertGraph, renderName } from '@controllers/admin/certificate/generator';
 import sendCertificate from '@utils/email/sender';
 import { MQSendCertficatePayload } from 'types';
 import format from 'date-fns/format';
 import sanitize from 'sanitize-filename';
 import { prisma } from '@models';
+import { CERTIFICATE_ROOT } from '@config';
 
 const handleConsume = async (msg: ConsumeMessage | null) => {
   const now = format(new Date(), 'yyyy-MM-dd HH:mm:ss');
@@ -30,17 +31,18 @@ const handleConsume = async (msg: ConsumeMessage | null) => {
     // eslint-disable-next-line no-console
     console.log(
       now,
-      `certificateId="${certificateId}", displayName=${certificate?.displayName} email="${userEmail}"`,
+      `certificateId="${certificateId}", displayName="${certificate?.displayName}", email="${userEmail}"`,
     );
 
     if (!participantName || !userEmail || !certificate) return null;
 
-    const { canvas, image } = await drawUsername({
+    const certGraph = await createCertGraph(CERTIFICATE_ROOT, certificate.filename);
+    const { canvas, image } = renderName({
       username: participantName,
       config: {
         namePositionY: certificate.template.namePositionY,
-        imageFilename: certificate.filename,
       },
+      certGraph,
     });
 
     const data = await new Promise<Buffer>((resolve) => {

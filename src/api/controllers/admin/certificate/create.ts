@@ -2,7 +2,8 @@ import { Middleware } from '@koa/router';
 import { CreateCertificatePayload as Payload } from 'types';
 import { prisma } from '@models';
 import { cleanContent } from '@utils/index';
-import generateCertificate from './generator';
+import { TEMPLATE_PATH } from '@config';
+import savaCertificate, { createCertGraph, renderCertificate } from './generator';
 
 const handleCreateCertificate: Middleware = async (ctx) => {
   const { displayName, content, activityUid, templateId } = ctx.request.body as Payload;
@@ -17,14 +18,21 @@ const handleCreateCertificate: Middleware = async (ctx) => {
 
   const cleanedContent = cleanContent(content);
 
-  const { url, filename } = await generateCertificate({
+  const certGraph = await createCertGraph(TEMPLATE_PATH, template.filename);
+
+  renderCertificate({
     texts: cleanedContent,
     config: {
-      templateFilename: template.filename,
       namePositionY: template.namePositionY,
       titleLowerLimitY: template.titleLowerLimitY,
       titleUpperLimitY: template.titleUpperLimitY,
     },
+    certGraph,
+  });
+
+  const { url, filename } = await savaCertificate({
+    texts: cleanedContent,
+    certGraph,
   });
 
   await prisma.certificate.create({

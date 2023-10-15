@@ -2,7 +2,8 @@ import { Middleware } from 'koa';
 import { CreateCertificatePayload } from 'types';
 import { cleanContent } from '@utils/index';
 import { prisma } from '@models';
-import { drawCertificate, drawUsername } from './generator';
+import { TEMPLATE_PATH } from '@config';
+import { createCertGraph, renderCertificate, renderName } from './generator';
 
 type Payload = Omit<CreateCertificatePayload, 'displayName' | 'activityUid'> & {
   dummyName?: string;
@@ -19,31 +20,28 @@ const handleCertificatePreview: Middleware = async (ctx) => {
     throw new Error('Template not found');
   }
 
-  const {
-    image,
-    canvas,
-    ctx: context,
-  } = await drawCertificate({
+  const certGraph = await createCertGraph(TEMPLATE_PATH, template.filename);
+  renderCertificate({
     texts: cleanContent(content),
     config: {
-      templateFilename: template.filename,
       namePositionY: template.namePositionY,
       titleLowerLimitY: template.titleLowerLimitY,
       titleUpperLimitY: template.titleUpperLimitY,
     },
+    certGraph,
   });
 
   if (dummyName) {
-    drawUsername({
+    renderName({
       username: dummyName,
       config: {
         namePositionY: template.namePositionY,
       },
-      certGraph: { canvas, image, ctx: context },
+      certGraph,
     });
   }
 
-  ctx.body = canvas.createPNGStream();
+  ctx.body = certGraph.canvas.createPNGStream();
 };
 
 export default handleCertificatePreview;

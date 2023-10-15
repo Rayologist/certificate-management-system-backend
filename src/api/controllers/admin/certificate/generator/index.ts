@@ -10,7 +10,7 @@ import { createHash } from 'crypto';
 import fs from 'fs';
 import path from 'path';
 import { pipeline } from 'stream/promises';
-import { TEMPLATE_PATH, FONT_ROOT, CERTIFICATE_ROOT } from '@config';
+import { FONT_ROOT, CERTIFICATE_ROOT } from '@config';
 import { Text } from 'types';
 
 registerFont(`${FONT_ROOT}/Lantinghei-Demibold.ttf`, { family: 'Lantinghei' });
@@ -28,15 +28,15 @@ export function calculateStartPixel(imageWidthOrHeight: number, sentencePixel: n
   return (imageWidthOrHeight - sentencePixel) / 2;
 }
 
-export function drawUsername(args: {
+export function renderName(args: {
   username: string;
   config: { namePositionY: number };
   certGraph: CertGraph;
-}) {
+}): CertGraph {
   const { username, config, certGraph } = args;
   const { ctx, image, canvas } = certGraph;
 
-  ctx.font = '120px "Helvetica Neue"';
+  ctx.font = '120px "Noto"';
   ctx.fillStyle = '#30788A';
   ctx.fillText(
     username,
@@ -46,16 +46,16 @@ export function drawUsername(args: {
   return { canvas, ctx, image };
 }
 
-export async function drawCertificate(args: DrawCertificateArgs): Promise<CertGraph> {
-  const { texts, config } = args;
-  const { ctx, image, canvas } = await createCertGraph(TEMPLATE_PATH, config.templateFilename);
+export function renderCertificate(args: RenderCertificateArgs): CertGraph {
+  const { texts, config, certGraph } = args;
+  const { ctx, image, canvas } = certGraph;
 
   const fontSize = 62;
   const lineHeight = 100;
   const font = `${fontSize}px "Times New Roman"`;
   ctx.font = font;
 
-  const extraLineHeight = 25;
+  const extraLineHeight = texts.length >= 5 ? 5 : 25;
 
   texts.forEach((text, index) => {
     const startHeight = config.titleUpperLimitY + fontSize + (lineHeight + extraLineHeight) * index;
@@ -76,9 +76,11 @@ export async function drawCertificate(args: DrawCertificateArgs): Promise<CertGr
   return { image, canvas, ctx };
 }
 
-export default async function generateCertificate(args: DrawCertificateArgs) {
-  const { texts } = args;
-  const { canvas } = await drawCertificate(args);
+export default async function savaCertificate(args: { texts: Text[]; certGraph: CertGraph }) {
+  const {
+    texts,
+    certGraph: { canvas },
+  } = args;
 
   // generate file name
   const hash = createHash('md5');
@@ -92,14 +94,14 @@ export default async function generateCertificate(args: DrawCertificateArgs) {
   return { url: digest, filename };
 }
 
-export type DrawCertificateArgs = {
+export type RenderCertificateArgs = {
   texts: Text[];
   config: {
-    templateFilename: string;
     namePositionY: number;
     titleUpperLimitY: number;
     titleLowerLimitY: number;
   };
+  certGraph: CertGraph;
 };
 
 export type CertGraph = {

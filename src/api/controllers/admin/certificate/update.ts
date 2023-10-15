@@ -1,12 +1,12 @@
 import { Middleware } from '@koa/router';
 import { prisma } from '@models';
 import { UpdateCertificatePayload as Payload, Text } from 'types';
-import { CERTIFICATE_ROOT } from '@config';
+import { CERTIFICATE_ROOT, TEMPLATE_PATH } from '@config';
 import path from 'path';
 import fs from 'fs';
 import { pipeline } from 'stream/promises';
 import { cleanContent } from '@utils/index';
-import { drawCertificate } from './generator';
+import { createCertGraph, renderCertificate } from './generator';
 
 const handleUpateCertificate: Middleware = async (ctx) => {
   const { id, displayName, content } = ctx.request.body as Payload;
@@ -30,14 +30,16 @@ const handleUpateCertificate: Middleware = async (ctx) => {
   {
     const { filename, content: certTitle, template } = data;
     const texts = certTitle as Text[];
-    const { canvas } = await drawCertificate({
+    const certGraph = await createCertGraph(TEMPLATE_PATH, template.filename);
+
+    renderCertificate({
       texts,
       config: {
-        templateFilename: template.filename,
         namePositionY: template.namePositionY,
         titleLowerLimitY: template.titleLowerLimitY,
         titleUpperLimitY: template.titleUpperLimitY,
       },
+      certGraph,
     });
 
     const filePath = path.resolve(CERTIFICATE_ROOT, filename);
@@ -48,7 +50,7 @@ const handleUpateCertificate: Middleware = async (ctx) => {
       where: { id },
       data: { available: false },
     });
-    await pipeline(canvas.createPNGStream(), fs.createWriteStream(filePath));
+    await pipeline(certGraph.canvas.createPNGStream(), fs.createWriteStream(filePath));
     await prisma.certificate.update({
       where: { id },
       data: { available: true },
