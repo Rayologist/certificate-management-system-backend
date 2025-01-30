@@ -1,22 +1,16 @@
-import { ConsumeMessage } from 'amqplib';
 import PDFDocument from 'pdfkit';
 import { createCertGraph, renderName } from '@controllers/admin/certificate/generator';
 import sendCertificate from '@utils/email/sender';
-import { MQSendCertficatePayload } from 'types';
+import { MQSendCertificatePayload } from 'types';
 import format from 'date-fns/format';
 import sanitize from 'sanitize-filename';
 import { prisma } from '@models';
 import { CERTIFICATE_ROOT } from '@config';
 
-const handleConsume = async (msg: ConsumeMessage | null) => {
+const handleConsume = async (payload: MQSendCertificatePayload) => {
   const now = format(new Date(), 'yyyy-MM-dd HH:mm:ss');
   try {
-    const content = msg?.content.toString() || '{}';
-
-    if (content === '{}') return null;
-
-    const { participantName, userEmail, certificateId }: MQSendCertficatePayload =
-      JSON.parse(content);
+    const { participantName, userEmail, certificateId }: MQSendCertificatePayload = payload;
     const certificate = await prisma.certificate.findUnique({
       where: { id: certificateId },
       select: {

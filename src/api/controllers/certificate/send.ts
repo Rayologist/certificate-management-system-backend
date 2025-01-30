@@ -1,5 +1,5 @@
 import { Middleware } from '@koa/router';
-import { SendCertificatePayload, MQSendCertficatePayload } from 'types';
+import { SendCertificatePayload, MQSendCertificatePayload } from 'types';
 import { prisma, connectionManager } from '@models';
 import format from 'date-fns/format';
 
@@ -7,7 +7,7 @@ async function publishCertificateEmail({
   userEmail,
   participantName,
   certificateId,
-}: MQSendCertficatePayload) {
+}: MQSendCertificatePayload) {
   try {
     const queue = 'email';
     const channel = await connectionManager.getChannel();

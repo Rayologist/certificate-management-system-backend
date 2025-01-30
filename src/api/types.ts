@@ -48,7 +48,7 @@ export type AdminSendCertificatePayload = {
   participantId: number;
 };
 
-export type MQSendCertficatePayload = {
+export type MQSendCertificatePayload = {
   userEmail: string;
   certificateId: number;
   participantName: string;
