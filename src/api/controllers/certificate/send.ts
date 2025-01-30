@@ -18,6 +18,7 @@ async function publishCertificateEmail({
       queue,
       Buffer.from(
         JSON.stringify({
+          type: 'userSendCertificate',
           userEmail,
           certificateId,
           participantName,

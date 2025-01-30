@@ -1,5 +1,7 @@
 import { connect } from '@models';
+import { MQAdminSendCertificatePayload, MQSendCertificatePayload } from 'types';
 import handleConsume from './handleConsume';
+import { handleAdminConsume } from './handleAdminConsume';
 
 async function sleep(seconds: number) {
   return new Promise((resolve) => {
@@ -20,10 +22,31 @@ class EmailConsumer {
     await channel.assertQueue(this.queue);
     await channel.prefetch(1);
     await channel.consume(this.queue, async (msg) => {
-      await sleep(24);
-      await handleConsume(msg);
-      if (msg !== null) {
-        channel.ack(msg);
+      try {
+        if (!msg?.content) {
+          return;
+        }
+
+        const message: { type: string } & Record<string, any> = JSON.parse(msg.content.toString());
+
+        if (!message) {
+          return;
+        }
+
+        await sleep(24);
+
+        if (message.type === 'userSendCertificate') {
+          await handleConsume(message as unknown as MQSendCertificatePayload);
+        } else if (message.type === 'adminSendCertificate') {
+          await handleAdminConsume(message as unknown as MQAdminSendCertificatePayload);
+        }
+
+        if (msg !== null) {
+          channel.ack(msg);
+        }
+      } catch (error) {
+        // eslint-disable-next-line no-console
+        console.log(error);
       }
     });
   }

@@ -53,3 +53,8 @@ export type MQSendCertificatePayload = {
   certificateId: number;
   participantName: string;
 };
+
+export type MQAdminSendCertificatePayload = {
+  participantId: string;
+  certificateId: number;
+};

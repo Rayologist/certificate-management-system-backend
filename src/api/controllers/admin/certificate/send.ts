@@ -2,10 +2,46 @@ import { createCertGraph, renderName } from '@controllers/admin/certificate/gene
 import PDFDocument from 'pdfkit';
 import { Middleware } from '@koa/router';
 import { AdminSendCertificatePayload } from 'types';
-import { prisma } from '@models';
+import { connectionManager, prisma } from '@models';
 import sendCertificate from '@utils/email/sender';
 import sanitize from 'sanitize-filename';
 import { CERTIFICATE_ROOT } from '@config';
+import { format } from 'date-fns';
+
+export async function publishCertificates({
+  participantIds,
+  certificateId,
+}: {
+  participantIds: string[];
+  certificateId: string;
+}) {
+  try {
+    const queue = 'email';
+    const channel = await connectionManager.getChannel();
+
+    await channel.assertQueue(queue);
+
+    participantIds.forEach((id) => {
+      channel.sendToQueue(
+        queue,
+        Buffer.from(
+          JSON.stringify({
+            type: 'adminSendCertificate',
+            participantId: id,
+            certificateId,
+          }),
+        ),
+      );
+    });
+
+    await channel.close();
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.error(format(new Date(), 'yyyy-MM-dd HH:mm:ss'), error);
+    return false;
+  }
+  return null;
+}
 
 const handleSendCertificate: Middleware = async (ctx) => {
   const { participantId, certificateId, altName } = ctx.request.body as AdminSendCertificatePayload;
